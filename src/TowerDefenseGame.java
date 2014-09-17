@@ -28,6 +28,7 @@ public class TowerDefenseGame extends BasicGame{
 	
 	private Image darkstage;
 	private Image Shopbackground;
+	private Image Upgratebackground;
 
 	public TowerDefenseGame(String title) throws SlickException {
 		super(title);
@@ -42,14 +43,17 @@ public class TowerDefenseGame extends BasicGame{
 		container.getGraphics().setBackground(background);
 		darkstage = new Image("res/DarkStage.png");
 		Shopbackground = new Image("res/Shop.png");
+		Upgratebackground = new Image("res/Upgrate.png");
 	}
 	
 	public void setBackgroundRender(Graphics g){
 		g.setColor(new Color(0, 0, 0));
 		darkstage.draw(Stage_x, Stage_y);
 		Shopbackground.draw(30,Stage_Height+10);
+		Upgratebackground.draw(Stage_Width+3,0);
 	}
 
+	
 	
 	
 	//Update Render and init
@@ -88,6 +92,9 @@ public class TowerDefenseGame extends BasicGame{
 		    }
 	}
 	
+	
+	
+	//mouse drag on cell
 	@Override
 	public void mouseMoved(int oldx, int oldy, int newx, int newy){
 		for(int i=0; i<Store.shopWidth;i++){

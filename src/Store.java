@@ -9,15 +9,16 @@ public class Store implements Entity{
 	
 	public static int shopWidth = 5;
 	public static int buttonSize = 78;
-	public static int cellSpace = 100;
-	public static int checkmouse[] = new int[]{0,0,0,0,0};
-	public static int shopXFirst = 700;
+	public static int cellSpace = 50;
+	public static int shopXFirst = 300;
 	
 	public static int[] x = new int[]{shopXFirst,shopXFirst+buttonSize + cellSpace,shopXFirst+2*buttonSize+2*cellSpace,shopXFirst+3*buttonSize+3*cellSpace,shopXFirst+4*buttonSize+4*cellSpace};
-	public static int y = 900;
+	public static int y = 880;
 
 	public static Image[] cell = new Image[shopWidth];
 	public static Image[] cellmouse = new Image[shopWidth];
+	
+	public static int checkmouse[] = new int[]{0,0,0,0,0};  // check mouse on cell
 	
 	public Store() throws SlickException {
 		for(int i=0;i<cell.length;i++){
