@@ -27,6 +27,7 @@ public class TowerDefenseGame extends BasicGame{
 	
 	
 	private Image darkstage;
+	private Image Shopbackground;
 
 	public TowerDefenseGame(String title) throws SlickException {
 		super(title);
@@ -40,11 +41,13 @@ public class TowerDefenseGame extends BasicGame{
 		Color background = new Color(0, 0, 0);
 		container.getGraphics().setBackground(background);
 		darkstage = new Image("res/DarkStage.png");
+		Shopbackground = new Image("res/Shop.png");
 	}
 	
 	public void setBackgroundRender(Graphics g){
 		g.setColor(new Color(0, 0, 0));
 		darkstage.draw(Stage_x, Stage_y);
+		Shopbackground.draw(30,Stage_Height+10);
 	}
 
 	
