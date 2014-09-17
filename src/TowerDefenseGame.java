@@ -19,16 +19,22 @@ public class TowerDefenseGame extends BasicGame{
 	public static int Stage_y = 0;
 	public static int Store_Height = 300;
 	
+	private float time = 0;
+	private float timer = 0;
+	
 	 private LinkedList<Entity> entities;
 	
 	 private TerrainDarkStage darkterrain;
 	 private Store cell;
+	 private fieldBuild filedbuild;
 	
 	
 	
 	private Image darkstage;
 	private Image Shopbackground;
 	private Image Upgratebackground;
+	
+	private int checkField = 0;   // ****delete
 
 	public TowerDefenseGame(String title) throws SlickException {
 		super(title);
@@ -72,13 +78,20 @@ public class TowerDefenseGame extends BasicGame{
 		
 		darkterrain = new TerrainDarkStage(Stage_x, Stage_y);
 		cell = new Store();
+		filedbuild = new fieldBuild();
 		 entities.add(darkterrain);
 		 entities.add(cell);
+		 entities.add(filedbuild);
 	}
 
 	@Override
 	public void update(GameContainer container, int delta) throws SlickException {
-		
+		time += delta;
+		if(time>1000){
+			time = 0;
+			timer++;
+			System.out.println(timer);
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -94,16 +107,24 @@ public class TowerDefenseGame extends BasicGame{
 	
 	
 	
-	//mouse drag on cell
 	@Override
 	public void mouseMoved(int oldx, int oldy, int newx, int newy){
+		//mouse drag on cell
 		for(int i=0; i<Store.shopWidth;i++){
 			if(newx > Store.x[i] && newx < Store.x[i] + Store.buttonSize && newy > Store.y && newy <  Store.y+ Store.buttonSize){
-				Store.checkmouse[i] = 1;
+				Store.checkmouse[i] = true;
 			}
 			else{
-				Store.checkmouse[i] = 0;
+				Store.checkmouse[i] = false;
 			}
+		}
+		
+		
+		//mouse drag on right cell
+		if(checkField == 0){
+			//System.out.println(fieldBuild.checkMouseMoveX(newx) + " " + fieldBuild.checkMouseMoveY(newy));
+				fieldBuild.checkCol_mouseXRectX = fieldBuild.checkMouseMoveX(newx);
+				fieldBuild.checkCol_mouseXRectY = fieldBuild.checkMouseMoveX(newy);
 		}
 	}
 }
