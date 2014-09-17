@@ -16,6 +16,7 @@ public class fieldBuild implements Entity{
 	
 	public static int checkCol_mouseXRectX;
 	public static int checkCol_mouseXRectY;
+	public static float mouseError = 20;
 	
 	Rectangle[][] build;
 	
@@ -30,7 +31,7 @@ public class fieldBuild implements Entity{
 	}
 	public static int checkMouseMoveX(float mouseX){
 		for(int i=0;i<x_size;i++){
-				if(mouseX > x[i] && mouseX < x[i]+sizeRect){
+				if(mouseX+mouseError > x[i] && mouseX+mouseError < x[i]+sizeRect){
 					return i; 
 				}
 		}
@@ -39,7 +40,7 @@ public class fieldBuild implements Entity{
 	
 	public static int checkMouseMoveY(float mouseY){
 			for(int j=0;j<y_size;j++){
-				if(mouseY > y[j] && mouseY < y[j]+sizeRect){
+				if(mouseY-mouseError/2 > y[j] && mouseY-mouseError/2 < y[j]+sizeRect){
 					return j; 
 				}
 			}
@@ -58,10 +59,13 @@ public class fieldBuild implements Entity{
 				y[j] = j*sizeRect;
 				g.setColor(outRect);
 			    g.draw(build[i][j]);
-			    if(i == checkCol_mouseXRectX && j == checkCol_mouseXRectY){
+			    if(((i == checkCol_mouseXRectX && j == checkCol_mouseXRectY) ||
+			       (i == checkCol_mouseXRectX-1 && j == checkCol_mouseXRectY)||	
+			       (i == checkCol_mouseXRectX && j == checkCol_mouseXRectY-1)||	
+			       (i == checkCol_mouseXRectX-1 && j == checkCol_mouseXRectY-1))
+			       && checkCol_mouseXRectY!=20 && checkCol_mouseXRectX!= 0){
 			    	g.setColor(myAlphaColor);
 			    }
-			    
 			   g.fill(build[i][j]);
 			}
 		}
