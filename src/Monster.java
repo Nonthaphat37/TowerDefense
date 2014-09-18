@@ -14,6 +14,7 @@ public class Monster implements Entity{
 
 	@Override
 	public void render(Graphics g) {
+		
 	}
 
 	@Override

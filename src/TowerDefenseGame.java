@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.newdawn.slick.AppGameContainer;
@@ -21,6 +22,9 @@ public class TowerDefenseGame extends BasicGame{
 	public static int Stage_y = 0;
 	public static int Store_Height = 300;
 	
+	private ArrayList<MonsterLv1> monsterLv1 = new ArrayList<MonsterLv1>();
+	
+	
 	private float time = 0;
 	public float timer = 0;
 	
@@ -38,7 +42,10 @@ public class TowerDefenseGame extends BasicGame{
 	 public static float monster_startX = -78;
 	 public static float monster_startY = 156;
 	 private boolean monster_checkTotal = false;
-	
+	private static int number_monster = 0;
+	private static int max_monster = 10;
+	private static float timerdelay_monster = (float)1;
+	private static float timer_monster = 0;
 	
 	
 	private Image darkstage;
@@ -79,9 +86,9 @@ public class TowerDefenseGame extends BasicGame{
 	public void Timer(int delta){
 		//time in Game
 				time += delta;
-				if(time>1000){
+				if(time>500){
 					time = 0;
-					timer++;
+					timer+=0.5;
 					if(currentWave != 0){
 						currentWave--;
 					}
@@ -93,11 +100,27 @@ public class TowerDefenseGame extends BasicGame{
 				
 	}
 	
+	public void releaseMonster() throws SlickException{
+		if(wave == 1 && number_monster < max_monster){
+			if(!monster_checkTotal){
+				monsterLv1.add(new MonsterLv1(monster_startX,monster_startY));
+				monster_checkTotal = true;			// check monster release
+				timer_monster = timer+timerdelay_monster;
+				number_monster++;
+			}
+			else if(timer_monster == timer){
+				monster_checkTotal = false;			// check monster release
+			}
+		}
+	}
+	
 	@Override
 	  public void keyPressed(int key, char c) {
 		 if (key == Input.KEY_T) {
 				checkField++;
 		    }
+		
+		 
 	  }
 	
 	//Update Render and init
@@ -107,10 +130,14 @@ public class TowerDefenseGame extends BasicGame{
 		
 		g.drawString("Wave   " + wave,1300,850);
 		g.drawString("Next Wave  " + currentWave,1300,870);
+		
 		for(Entity entity : entities) {
 			entity.render(g);
 		}
-		
+		for(MonsterLv1 monster : monsterLv1){
+			monster.render(g);
+			
+		}	
 	}
 
 	@Override
@@ -128,14 +155,14 @@ public class TowerDefenseGame extends BasicGame{
 	
 	@Override
 	public void update(GameContainer container, int delta) throws SlickException {
-		if(wave == 1 && !monster_checkTotal){
-			entities.add(new MonsterLv1(monster_startX,monster_startY));
-			monster_checkTotal = true;   // check monster release
-		}
+		releaseMonster();
 		Timer(delta);
 		for (Entity entity : entities) {
 		      entity.update(container,delta);
 		    }
+		for(MonsterLv1 monster : monsterLv1){
+			monster.update(container,delta);
+		}
 	}
 	
 	public static void main(String[] args) {

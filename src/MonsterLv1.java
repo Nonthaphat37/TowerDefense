@@ -9,7 +9,7 @@ public class MonsterLv1 extends Monster {
 	private Image monsterLv1;
 	private float x;
 	private float y;
-	private float velocity = (float) 1;
+	private float velocity = (float) 0.5;
 	private int checkfieldX = 0;
 	private int checkfieldY = 0;
 	
