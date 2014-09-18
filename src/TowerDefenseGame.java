@@ -36,6 +36,8 @@ public class TowerDefenseGame extends BasicGame{
 	private Image Shopbackground;
 	private Image Upgratebackground;
 	
+	private static float mouseError = 21;
+	
 	private int checkField = 0;   // ****delete
 
 	public TowerDefenseGame(String title) throws SlickException {
@@ -106,7 +108,7 @@ public class TowerDefenseGame extends BasicGame{
 		try {
 		      TowerDefenseGame game = new TowerDefenseGame("TowerDefenseGame");
 		      AppGameContainer appgc = new AppGameContainer(game);
-		      appgc.setDisplayMode(Screen_Width, Screen_Height ,true);
+		      appgc.setDisplayMode(Screen_Width, Screen_Height ,false);
 		      appgc.start();
 		    } catch (SlickException e) {
 		      e.printStackTrace();
@@ -116,24 +118,25 @@ public class TowerDefenseGame extends BasicGame{
 	@Override
 	public void mouseMoved(int oldx, int oldy, int newx, int newy){
 		//mouse drag on cell
-		for(int i=0; i<Store.shopWidth;i++){
-			if(newx > Store.x[i] && newx < Store.x[i] + Store.buttonSize && newy > Store.y && newy <  Store.y+ Store.buttonSize){
-				Store.checkmouse[i] = true;
-			}
-			else{
-				Store.checkmouse[i] = false;
-			}
-		}
+		Store.checkMouseInCell(newx,newy);
 		
-		
-		//mouse drag on right cell
+		//mouse drag on buildField
 		if(checkField%2!=0){
-				fieldBuild.checkCol_mouseXRectX = fieldBuild.checkMouseMoveX(newx);
-				fieldBuild.checkCol_mouseXRectY = fieldBuild.checkMouseMoveX(newy);
+				fieldBuild.checkCol_mouseXRectX = fieldBuild.checkMouseMoveX(newx-mouseError);
+				fieldBuild.checkCol_mouseXRectY = fieldBuild.checkMouseMoveX(newy+mouseError/3);
 		}
 		else{
 			fieldBuild.checkCol_mouseXRectX = -1;
 			fieldBuild.checkCol_mouseXRectY = -1;
+		}
+	}
+	
+	@Override
+	public void mousePressed(int button, int x, int y){
+		if(checkField%2!=0 && button == 0){
+			fieldBuild.checkCol_mouseXRectX = -1;
+			fieldBuild.checkCol_mouseXRectY = -1;
+			checkField++;
 		}
 	}
 }
