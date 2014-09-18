@@ -1,5 +1,5 @@
 
-import org.lwjgl.util.Rectangle;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -53,8 +53,8 @@ public class Store implements Entity{
 		}
 	}
 	@Override
-	public void update() {
-		// TODO Auto-generated method stub
+	public void update(GameContainer container, int delta) {
+		
 		
 	}
 

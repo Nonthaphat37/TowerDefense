@@ -22,19 +22,30 @@ public class TowerDefenseGame extends BasicGame{
 	public static int Store_Height = 300;
 	
 	private float time = 0;
-	private float timer = 0;
+	public float timer = 0;
+	
+	public int currentWave = 2;
+	public static int wave = 0;
+	private boolean checkWave = true;  // check to release monster in next wave
 	
 	 private LinkedList<Entity> entities;
 	
 	 private TerrainDarkStage darkterrain;
 	 private Store cell;
 	 private fieldBuild filedbuild;
+	 
+	 //monster
+	 public static float monster_startX = -78;
+	 public static float monster_startY = 156;
+	 private boolean monster_checkTotal = false;
 	
 	
 	
 	private Image darkstage;
 	private Image Shopbackground;
 	private Image Upgratebackground;
+	
+
 	
 	private static float mouseError = 21;
 	
@@ -54,6 +65,7 @@ public class TowerDefenseGame extends BasicGame{
 		darkstage = new Image("res/DarkStage.png");
 		Shopbackground = new Image("res/Shop.png");
 		Upgratebackground = new Image("res/Upgrate.png");
+
 	}
 	
 	public void setBackgroundRender(Graphics g){
@@ -63,6 +75,23 @@ public class TowerDefenseGame extends BasicGame{
 		Upgratebackground.draw(Stage_Width+3,0);
 	}
 
+	
+	public void Timer(int delta){
+		//time in Game
+				time += delta;
+				if(time>1000){
+					time = 0;
+					timer++;
+					if(currentWave != 0){
+						currentWave--;
+					}
+					if(checkWave && currentWave == 0){
+						wave++;
+					    checkWave = false;
+					}
+				}
+				
+	}
 	
 	@Override
 	  public void keyPressed(int key, char c) {
@@ -76,9 +105,12 @@ public class TowerDefenseGame extends BasicGame{
 	public void render(GameContainer container, Graphics g) throws SlickException {
 		setBackgroundRender(g);
 		
+		g.drawString("Wave   " + wave,1300,850);
+		g.drawString("Next Wave  " + currentWave,1300,870);
 		for(Entity entity : entities) {
 			entity.render(g);
 		}
+		
 	}
 
 	@Override
@@ -96,12 +128,14 @@ public class TowerDefenseGame extends BasicGame{
 	
 	@Override
 	public void update(GameContainer container, int delta) throws SlickException {
-		//time in Game
-		time += delta;
-		if(time>1000){
-			time = 0;
-			timer++;
+		if(wave == 1 && !monster_checkTotal){
+			entities.add(new MonsterLv1(monster_startX,monster_startY));
+			monster_checkTotal = true;   // check monster release
 		}
+		Timer(delta);
+		for (Entity entity : entities) {
+		      entity.update(container,delta);
+		    }
 	}
 	
 	public static void main(String[] args) {
