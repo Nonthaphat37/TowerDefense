@@ -3,6 +3,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Circle;
 
 
 public class Store implements Entity{
@@ -22,13 +23,11 @@ public class Store implements Entity{
 	private static boolean checkmouse[] = new boolean[]{false,false,false,false,false};  // check mouse on cell
 	
 	//Tower
-	
 	private static Image towershop1;
 	
 	public Store() throws SlickException {
 		
 		towershop1 = new Image("res/testTower.png");
-		
 		
 		for(int i=0; i<cell.length;i++){
 			cell[i] = new Image("res/cell.png");

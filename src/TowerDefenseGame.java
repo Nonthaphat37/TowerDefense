@@ -41,15 +41,14 @@ public class TowerDefenseGame extends BasicGame{
 	 
 	 
 	 //monster
-	 private ArrayList<MonsterLv1> monsterLv1 = new ArrayList<MonsterLv1>();
 	 public static float monster_startX = -78;
 	 public static float monster_startY = 156;
 	 private boolean monster_checkTotal = false;
 	private static int number_monster = 0;
-	private static int max_monster = 10;
-	private static float timerdelay_monster = (float) 1;
+	private static int max_monster = 20;
+	private static float timerdelay_monster = (float) 3;
 	private static float timer_monster = 0;
-	private float velovityMonster_Lv1 = (float) 5;
+	 private ArrayList<Monster> monsterAll = new ArrayList<Monster>();
 
 	
 	//Background
@@ -143,7 +142,7 @@ public class TowerDefenseGame extends BasicGame{
 	public void releaseMonster() throws SlickException{
 		if(wave == 1 && number_monster < max_monster){
 			if(!monster_checkTotal){
-				monsterLv1.add(new MonsterLv1(monster_startX, monster_startY, (float) velovityMonster_Lv1));
+				monsterAll.add(new MonsterLv1(monster_startX, monster_startY));
 				monster_checkTotal = true;			// check monster release
 				timer_monster = timer+timerdelay_monster;
 				number_monster++;
@@ -244,7 +243,7 @@ public class TowerDefenseGame extends BasicGame{
 		for(Entity entity : entities) {
 			entity.render(g);
 		}
-		for(MonsterLv1 monster : monsterLv1){
+		for(Monster monster : monsterAll){
 			monster.render(g);
 		}	
 		for(TowerDark tower : towerdark){
@@ -281,13 +280,19 @@ public class TowerDefenseGame extends BasicGame{
 			for (Entity entity : entities) {
 			      entity.update(container, delta);
 			    }
-			for(MonsterLv1 monster : monsterLv1){
+			for(Monster monster : monsterAll){
 				monster.update(container, delta);
 			}
 			for(TowerDark tower : towerdark){
 				tower.update(container, delta);
 			}
 			death();
+			for (int i =0; i < monsterAll.size(); i++) {
+				Monster temp = monsterAll.get(i);
+				for(TowerDark tower : towerdark){
+					tower.rangeCheck(temp,i);
+				}
+			}
 		}
 	}
 	
@@ -308,7 +313,6 @@ public class TowerDefenseGame extends BasicGame{
 		Store.checkMouseInCell(newx, newy);
 		
 		//mouse drag on buildField
-		//if(checkField%2 != 0){
 		if(checkMouseClickCell){
 				fieldBuild.checkCol_mouseXRectX = fieldBuild.checkMouseMoveX(newx-mouseError);
 				fieldBuild.checkCol_mouseXRectY = fieldBuild.checkMouseMoveY(newy+mouseError/3);

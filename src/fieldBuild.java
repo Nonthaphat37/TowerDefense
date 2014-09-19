@@ -3,6 +3,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Rectangle;
 
 
@@ -45,6 +46,8 @@ public class fieldBuild implements Entity{
 	
 	//Show Tower On MouseMoved
 	private static Image towershop1;
+	private int Rangetower1 = 78+39;
+	Circle Rangetowershop1;
 	
 	
 	public fieldBuild() throws SlickException{
@@ -105,17 +108,33 @@ public class fieldBuild implements Entity{
 		}
 	}
 	
-	public void drawTower(){
-		if(TowerDefenseGame.checkMouseClickCell){
+	public void drawTower(Graphics g){
+		if(TowerDefenseGame.checkMouseClickCell && 
+			checkCol_mouseXRectX != -1 && checkCol_mouseXRectY != -1){
+			if(checkCol_mouseXRectY-1 >= 0 && checkCol_mouseXRectX+1 != 40){
+			// delete circle show range if build in red field
+				  if(fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX] == 0 &&
+					 fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX] == 0 &&
+					 fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX+1] == 0 &&
+					 fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX+1] == 0){
+										Rangetowershop1 = new Circle((checkCol_mouseXRectX+1)*sizeRect,checkCol_mouseXRectY*sizeRect,Rangetower1);
+										g.setColor(new Color(1f,1f,1f,0f));
+										g.draw(Rangetowershop1);
+										g.setColor(new Color(1f,1f,1f,0.2f));
+										g.fill(Rangetowershop1);
+				   }
+
 			towershop1.draw(checkCol_mouseXRectX*sizeRect,
 					(checkCol_mouseXRectY-1)*sizeRect);
+			}
 		}
+			
 	}
 	
 	@Override
 	public void render(Graphics g) {
 		checkPositionMouseAndRect(g);
-		drawTower();
+		drawTower(g);
 	}
 
 	@Override

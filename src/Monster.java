@@ -26,6 +26,14 @@ public class Monster implements Entity{
 		this.y = y;
     }
     
+    public float getX(){
+    	return x;
+    }
+    
+    public float getY(){
+    	return y;
+    }
+    
 	public void positionError(int block_x,int block_y){
 		if(checkfieldY == 5){
 			if(checkfieldX == 20){
@@ -84,7 +92,6 @@ public class Monster implements Entity{
 	protected void updateposition(){
 		checkfieldX = (int)(x/fieldBuild.sizeRect);
 		checkfieldY = (int)(y/fieldBuild.sizeRect);
-		//System.out.println("x = " + x + " y = " + y + " [x] = " + checkfieldX + " [y] = " + checkfieldY);
 		if(errorStarted){
 			Start(checkfieldX);
 		}
@@ -134,7 +141,6 @@ public class Monster implements Entity{
 						}
 						else if(checkfield1 > checkfield2){
 							y+=velocity;
-							System.out.println("a");
 							checkAnimation = 0;
 							//monsterLv1.setRotation(90);
 						}
