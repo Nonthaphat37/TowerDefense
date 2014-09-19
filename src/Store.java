@@ -22,7 +22,7 @@ public class Store implements Entity{
 	private static boolean checkmouse[] = new boolean[]{false,false,false,false,false};  // check mouse on cell
 	
 	public Store() throws SlickException {
-		for(int i=0;i<cell.length;i++){
+		for(int i=0; i<cell.length;i++){
 			cell[i] = new Image("res/cell.png");
 			cellmouse[i] = new Image("res/cellmouse.png");
 		}

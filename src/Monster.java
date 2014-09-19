@@ -13,6 +13,9 @@ public class Monster implements Entity{
 	private boolean errorPosition = false;
 	private boolean errorStarted = true;
 	private boolean errorFinish = false;
+	
+	protected int checkAnimation = 0;
+	protected int attackCastle;
 
     public Monster(float x,float y){
 		this.x = x;
@@ -26,11 +29,13 @@ public class Monster implements Entity{
 			}
 			else{
 				x+=velocity;
+				checkAnimation = 0;
 				//monsterLv1.setRotation(0);
 			}
 		}
 		else{
 			y-=velocity;
+			checkAnimation = 1;
 			//monsterLv1.setRotation(270);
 		}
 	}
@@ -38,6 +43,7 @@ public class Monster implements Entity{
 	public void Start(int check_startX){
 		if(checkfieldX < 2){
 			x+=velocity;
+			checkAnimation = 0;
 			//monsterLv1.setRotation(0);
 		}
 		else{
@@ -49,9 +55,10 @@ public class Monster implements Entity{
 		if(checkfieldY > -2){
 			//monsterLv1.setRotation(270);
 			y-=velocity;
+			checkAnimation = 1;
 		}
 		else{
-			TowerDefenseGame.HpGame -- ;
+			TowerDefenseGame.HpGame -= attackCastle ;
 			x = TowerDefenseGame.monster_startX;								/// monster in castle
 			y = TowerDefenseGame.monster_startY;
 			errorStarted = true;
@@ -101,14 +108,18 @@ public class Monster implements Entity{
 					
 						if(fieldBuild.fieldTerrain[checkfieldY][checkfieldX+2] == 1){
 							x+=velocity;
+							checkAnimation = 0;
 							//monsterLv1.setRotation(0);
 						}
 						else if(fieldBuild.fieldTerrain[checkfieldY+2][checkfieldX] > fieldBuild.fieldTerrain[checkfieldY][checkfieldX]){
 							y+=velocity;
+							checkAnimation = 0;
 							//monsterLv1.setRotation(90);
 						}
 						else if(fieldBuild.fieldTerrain[checkfieldY-2][checkfieldX] > fieldBuild.fieldTerrain[checkfieldY][checkfieldX]){
 							y-=velocity;
+							checkAnimation = 1;
+							
 							//monsterLv1.setRotation(270);
 							
 						}

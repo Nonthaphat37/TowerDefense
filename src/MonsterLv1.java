@@ -7,20 +7,31 @@ import org.newdawn.slick.SpriteSheet;
 public class MonsterLv1 extends Monster {
 	
 	//monster
-	private SpriteSheet Monster;
-	private Animation MonsterAnimation;
+	private SpriteSheet Monster1;
+	private SpriteSheet Monster2;
+	private Animation MonsterAnimation1;
+	private Animation MonsterAnimation2;
+	private int attack = 11;
 
 	public MonsterLv1(float x, float y, float velocity) throws SlickException {
 		super(x, y);
-		Monster = new SpriteSheet("res/testAnimation.png",78,78);
-		MonsterAnimation = new Animation(Monster,100);
+		Monster1 = new SpriteSheet("res/MonsterLv1_1.png", 78, 78);
+		Monster2 = new SpriteSheet("res/MonsterLv1_2.png", 78, 78);
+		MonsterAnimation1 = new Animation(Monster1, 100);
+		MonsterAnimation2 = new Animation(Monster2, 100);
 		this.velocity = velocity;
 		//monsterLv1 = new Image("res/Monster_Lv1.png");
+		attackCastle = attack;		//set attack Hp
 	}
 	
 	@Override
 	public void render(Graphics g) {
-		 MonsterAnimation.draw(x,y);
+		if(checkAnimation == 0){
+			MonsterAnimation1.draw(x,y);
+		}
+		else{
+			MonsterAnimation2.draw(x,y);
+		}
 	}
 
 }
