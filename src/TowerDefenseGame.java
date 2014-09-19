@@ -37,6 +37,7 @@ public class TowerDefenseGame extends BasicGame{
 	 private TerrainDarkStage darkterrain;
 	 private Store cell;
 	 private fieldBuild filedbuild;
+	 private Door doorHeart;
 	 
 	 //monster
 	 public static float monster_startX = -78;
@@ -46,7 +47,14 @@ public class TowerDefenseGame extends BasicGame{
 	private static int max_monster = 10;
 	private static float timerdelay_monster = (float)1;
 	private static float timer_monster = 0;
+
+	private static float changeResolutionBg = 1;
+	private static int checkResolutionBg = 1;
 	
+	//Hp game use in Door
+	public static int HpGame = 100;
+	private int Heart_x = 1300;
+	private int Heart_y = 920;
 	
 	private Image darkstage;
 	private Image Shopbackground;
@@ -82,6 +90,20 @@ public class TowerDefenseGame extends BasicGame{
 		Upgratebackground.draw(Stage_Width+3,0);
 	}
 
+	public void ChangeResolutionBg(){
+		if(checkResolutionBg == 1){
+			changeResolutionBg-=0.05;
+			if(changeResolutionBg <= 0){
+				checkResolutionBg = 0;
+			}
+		}
+		else if(checkResolutionBg == 0){
+			changeResolutionBg+=0.05;
+			if(changeResolutionBg >= 1){
+				checkResolutionBg = 1;
+			}
+		}
+	}
 	
 	public void Timer(int delta){
 		//time in Game
@@ -89,15 +111,16 @@ public class TowerDefenseGame extends BasicGame{
 				if(time>500){
 					time = 0;
 					timer+=0.5;
-					if(currentWave != 0){
+					ChangeResolutionBg();
+					if(currentWave != 0 && Math.ceil(timer) - timer != 0.5){
 						currentWave--;
 					}
 					if(checkWave && currentWave == 0){
 						wave++;
+						currentWave = 5;
 					    checkWave = false;
 					}
 				}
-				
 	}
 	
 	public void releaseMonster() throws SlickException{
@@ -128,15 +151,19 @@ public class TowerDefenseGame extends BasicGame{
 	public void render(GameContainer container, Graphics g) throws SlickException {
 		setBackgroundRender(g);
 		
+		//draw textWave
 		g.drawString("Wave   " + wave,1300,850);
 		g.drawString("Next Wave  " + currentWave,1300,870);
+		
+		//draw textHp
+		g.setColor(new Color(255,0,0));
+		g.drawString("" + HpGame,Heart_x +80 ,Heart_y +11);
 		
 		for(Entity entity : entities) {
 			entity.render(g);
 		}
 		for(MonsterLv1 monster : monsterLv1){
 			monster.render(g);
-			
 		}	
 	}
 
@@ -147,9 +174,11 @@ public class TowerDefenseGame extends BasicGame{
 		darkterrain = new TerrainDarkStage(Stage_x, Stage_y);
 		cell = new Store();
 		filedbuild = new fieldBuild();
+		 doorHeart = new Door((int)32*fieldBuild.sizeRect,0,Heart_x,Heart_y);
 		 entities.add(darkterrain);
 		 entities.add(cell);
 		 entities.add(filedbuild);
+		 entities.add(doorHeart);
 	}
 
 	
@@ -157,6 +186,9 @@ public class TowerDefenseGame extends BasicGame{
 	public void update(GameContainer container, int delta) throws SlickException {
 		releaseMonster();
 		Timer(delta);
+		if(wave >= 1){
+			darkstage.setColor((int) 1f, 1f, 1f, changeResolutionBg);
+		}
 		for (Entity entity : entities) {
 		      entity.update(container,delta);
 		    }
@@ -169,7 +201,7 @@ public class TowerDefenseGame extends BasicGame{
 		try {
 		      TowerDefenseGame game = new TowerDefenseGame("TowerDefenseGame");
 		      AppGameContainer appgc = new AppGameContainer(game);
-		      appgc.setDisplayMode(Screen_Width, Screen_Height ,false);
+		      appgc.setDisplayMode(Screen_Width, Screen_Height ,true);
 		      appgc.start();
 		    } catch (SlickException e) {
 		      e.printStackTrace();

@@ -24,5 +24,6 @@ public class Monster implements Entity{
 	protected void updateposition(){
 		x+=1;
 	}
+	
 
 }
