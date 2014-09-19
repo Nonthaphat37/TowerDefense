@@ -91,14 +91,13 @@ public class fieldBuild implements Entity{
 			         if( fieldTerrain[j][i] != 0){
 				    	   g.setColor(notbuildColor);
 				      }else{
-						    	g.setColor(myAlphaColor);
+						   g.setColor(myAlphaColor);
 					   } 
 			    	 }
-			  g.fill(build[i][j]);
+			    g.fill(build[i][j]);
 			}
 		}
 	}
-	
 	
 	@Override
 	public void render(Graphics g) {

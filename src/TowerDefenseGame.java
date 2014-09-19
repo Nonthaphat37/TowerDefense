@@ -126,7 +126,7 @@ public class TowerDefenseGame extends BasicGame{
 	public void releaseMonster() throws SlickException{
 		if(wave == 1 && number_monster < max_monster){
 			if(!monster_checkTotal){
-				monsterLv1.add(new MonsterLv1(monster_startX,monster_startY));
+				monsterLv1.add(new MonsterLv1(monster_startX,monster_startY,(float)0.5));
 				monster_checkTotal = true;			// check monster release
 				timer_monster = timer+timerdelay_monster;
 				number_monster++;
