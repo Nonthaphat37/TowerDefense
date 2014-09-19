@@ -14,6 +14,10 @@ public class Monster implements Entity{
 	private boolean errorStarted = true;
 	private boolean errorFinish = false;
 	
+	private int checkfield1 = 0;
+	private int checkfield2 = 0;
+	private int checkfield3 = 0;
+	
 	protected int checkAnimation = 0;
 	protected int attackCastle;
 
@@ -97,7 +101,6 @@ public class Monster implements Entity{
 						&& fieldBuild.fieldTerrain[checkfieldY][checkfieldX] != 1
 						&& fieldBuild.fieldTerrain[checkfieldY][checkfieldX+2] == 1
 						&& fieldBuild.fieldTerrain[checkfieldY+2][checkfieldX] != 0
-						&& fieldBuild.fieldTerrain[checkfieldY+2][checkfieldX] != 0
 						){
 					errorPosition = true;
 				}
@@ -106,17 +109,36 @@ public class Monster implements Entity{
 					if(checkfieldX <= fieldBuild.x_size && checkfieldX >= 2 
 					&& checkfieldY <= fieldBuild.y_size && checkfieldY >= 2 ){
 					
-						if(fieldBuild.fieldTerrain[checkfieldY][checkfieldX+2] == 1){
+						if(fieldBuild.fieldTerrain[checkfieldY+2][checkfieldX] == 99){
+							checkfield1 = 0;
+						}else{
+							checkfield1 = fieldBuild.fieldTerrain[checkfieldY+2][checkfieldX];
+						}
+						if(fieldBuild.fieldTerrain[checkfieldY-2][checkfieldX] == 99){
+							checkfield3 = 0;
+						}else{
+							checkfield3 = fieldBuild.fieldTerrain[checkfieldY-2][checkfieldX];
+						}
+						if(fieldBuild.fieldTerrain[checkfieldY][checkfieldX] == 99){
+							checkfield2 = 0;
+						}else{
+							checkfield2 = fieldBuild.fieldTerrain[checkfieldY][checkfieldX];
+						}
+						
+						//check position to walk monster
+						if(fieldBuild.fieldTerrain[checkfieldY][checkfieldX+2] == 1
+							){
 							x+=velocity;
 							checkAnimation = 0;
 							//monsterLv1.setRotation(0);
 						}
-						else if(fieldBuild.fieldTerrain[checkfieldY+2][checkfieldX] > fieldBuild.fieldTerrain[checkfieldY][checkfieldX]){
+						else if(checkfield1 > checkfield2){
 							y+=velocity;
+							System.out.println("a");
 							checkAnimation = 0;
 							//monsterLv1.setRotation(90);
 						}
-						else if(fieldBuild.fieldTerrain[checkfieldY-2][checkfieldX] > fieldBuild.fieldTerrain[checkfieldY][checkfieldX]){
+						else if(checkfield3 > checkfield2){
 							y-=velocity;
 							checkAnimation = 1;
 							

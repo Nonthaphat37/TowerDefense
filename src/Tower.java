@@ -4,8 +4,8 @@ import org.newdawn.slick.Graphics;
 
 public class Tower implements Entity{
 	
-	 private float x;
-	 private float y;
+	 protected float x;
+	 protected float y;
 	 
 	 public Tower(float x, float y){
 			this.x = x;

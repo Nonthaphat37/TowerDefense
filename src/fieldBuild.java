@@ -109,7 +109,6 @@ public class fieldBuild implements Entity{
 		if(TowerDefenseGame.checkMouseClickCell){
 			towershop1.draw(checkCol_mouseXRectX*sizeRect,
 					(checkCol_mouseXRectY-1)*sizeRect);
-			System.out.println(checkCol_mouseXRectX);
 		}
 	}
 	

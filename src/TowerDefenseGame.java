@@ -24,8 +24,6 @@ public class TowerDefenseGame extends BasicGame{
 	public static int Store_Height = 300;
 	
 	
-	private ArrayList<MonsterLv1> monsterLv1 = new ArrayList<MonsterLv1>();
-	
 	
 	private float time = 0;
 	public float timer = 0;
@@ -43,6 +41,7 @@ public class TowerDefenseGame extends BasicGame{
 	 
 	 
 	 //monster
+	 private ArrayList<MonsterLv1> monsterLv1 = new ArrayList<MonsterLv1>();
 	 public static float monster_startX = -78;
 	 public static float monster_startY = 156;
 	 private boolean monster_checkTotal = false;
@@ -50,7 +49,7 @@ public class TowerDefenseGame extends BasicGame{
 	private static int max_monster = 10;
 	private static float timerdelay_monster = (float) 1;
 	private static float timer_monster = 0;
-	private float velovityMonster_Lv1 = (float)0.5;
+	private float velovityMonster_Lv1 = (float) 5;
 
 	
 	//Background
@@ -72,6 +71,7 @@ public class TowerDefenseGame extends BasicGame{
 
 	
 	//Store Tower
+	private ArrayList<TowerDark> towerdark = new ArrayList<TowerDark>();
 	public static boolean checkMouseClickCell = false;
 	
 	
@@ -175,13 +175,57 @@ public class TowerDefenseGame extends BasicGame{
 		}
 	}
 	
+	//buy tower in shop
+	public void mouseClickBuyItemShop(int button, int x, int y){
+		if(Store.checkMouseTower(x,y) && !checkMouseClickCell && button == 0){		//click tower in shop
+			checkMouseClickCell = true;
+		}
+		else if(checkMouseClickCell && button == 0 &&
+				fieldBuild.checkCol_mouseXRectY-1 != -1 &&
+				fieldBuild.checkCol_mouseXRectX != -1 &&
+				fieldBuild.checkCol_mouseXRectY != -1 &&
+				fieldBuild.checkCol_mouseXRectX+1 != -1){
+					if(fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX] == 0 &&
+					   fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX] == 0 &&
+			           fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX+1] == 0 &&
+					   fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX+1] == 0){
+						
+						//add tower
+						
+						try {
+							towerdark.add(new TowerDark(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
+									(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
+							}	 catch (SlickException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						//give red field
+						fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX] = 99;
+						fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX] = 99;
+						fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX+1] = 99;
+						fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX+1] = 99;
+						
+						//remove terrain and click
+						fieldBuild.checkCol_mouseXRectX = -1;
+						fieldBuild.checkCol_mouseXRectY = -1;
+						checkMouseClickCell = false;
+					}
+		}
+		else if(checkMouseClickCell && button == 1){
+			//remove buy
+				checkMouseClickCell = false;
+				fieldBuild.checkCol_mouseXRectX = -1;
+				fieldBuild.checkCol_mouseXRectY = -1;
+		}
+	}
 	
 	
 	@Override
 	  public void keyPressed(int key, char c) {
 		if(isGameStarted && !isGameOver){
 		 if (key == Input.KEY_T) {
-		    }
+		 }
 		}
 	  }
 	
@@ -202,6 +246,9 @@ public class TowerDefenseGame extends BasicGame{
 		}
 		for(MonsterLv1 monster : monsterLv1){
 			monster.render(g);
+		}	
+		for(TowerDark tower : towerdark){
+			tower.render(g);
 		}	
 	}
 
@@ -237,6 +284,9 @@ public class TowerDefenseGame extends BasicGame{
 			for(MonsterLv1 monster : monsterLv1){
 				monster.update(container, delta);
 			}
+			for(TowerDark tower : towerdark){
+				tower.update(container, delta);
+			}
 			death();
 		}
 	}
@@ -262,7 +312,6 @@ public class TowerDefenseGame extends BasicGame{
 		if(checkMouseClickCell){
 				fieldBuild.checkCol_mouseXRectX = fieldBuild.checkMouseMoveX(newx-mouseError);
 				fieldBuild.checkCol_mouseXRectY = fieldBuild.checkMouseMoveY(newy+mouseError/3);
-				//System.out.println(fieldBuild.checkCol_mouseXRectX + " " + fieldBuild.checkCol_mouseXRectY);
 		}
 		else{
 			fieldBuild.checkCol_mouseXRectX = -1;
@@ -273,16 +322,6 @@ public class TowerDefenseGame extends BasicGame{
 	
 	@Override
 	public void mousePressed(int button, int x, int y){
-		
-		if(Store.checkMouseTower(x,y) && !checkMouseClickCell && button == 0){		//click tower in shop
-			//System.out.println(fieldBuild.checkCol_mouseXRectX);
-			checkMouseClickCell = true;
-		}
-		else if(checkMouseClickCell && button == 0){								//build tower
-			//System.out.println(fieldBuild.checkCol_mouseXRectX);
-			fieldBuild.checkCol_mouseXRectX = -1;
-			fieldBuild.checkCol_mouseXRectY = -1;
-			checkMouseClickCell = false;
-		}
+		mouseClickBuyItemShop(button, x, y);
 	}
 }

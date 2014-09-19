@@ -62,10 +62,7 @@ public class Store implements Entity{
 	public void shopTower(){
 		towershop1.draw(shopXFirst,y);	//render tower1
 	}
-	
-	public void RenderShopTowerOnMouseMoved(){
-		
-	}
+
 	////////////////////////////////////////////////////////////////////
 	
 	

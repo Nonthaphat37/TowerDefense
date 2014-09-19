@@ -14,7 +14,7 @@ public class TowerDark extends Tower {
 	
 	@Override
 	public void render(Graphics g) {
-		towerDark.draw();
+		towerDark.draw(x,y);
 	}
 
 }
