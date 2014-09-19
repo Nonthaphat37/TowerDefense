@@ -41,6 +41,7 @@ public class TowerDefenseGame extends BasicGame{
 	 private fieldBuild filedbuild;
 	 private Door doorHeart;
 	 
+	 
 	 //monster
 	 public static float monster_startX = -78;
 	 public static float monster_startY = 156;
@@ -49,10 +50,13 @@ public class TowerDefenseGame extends BasicGame{
 	private static int max_monster = 10;
 	private static float timerdelay_monster = (float) 1;
 	private static float timer_monster = 0;
-	private float velovityMonster_Lv1 = 5;
+	private float velovityMonster_Lv1 = (float)0.5;
 
+	
+	//Background
 	private static float changeResolutionBg = 1;
 	private static int checkResolutionBg = 1;
+	
 	
 	//Hp game use in Door
 	public static int HpGame = 100;
@@ -60,15 +64,22 @@ public class TowerDefenseGame extends BasicGame{
 	private int Heart_y = 920;
 	private Rectangle hpLoaded;
 	
+	
+	//Image Screen
 	private Image darkstage;
 	private Image Shopbackground;
 	private Image Upgratebackground;
+
+	
+	//Store Tower
+	public static boolean checkMouseClickCell = false;
 	
 	
+	//Mouse
 	private static float mouseError = 21;
 	
-	private int checkField = 0;   // ****delete
 	
+	//GameStart and GameOver
 	private boolean isGameStarted = false;
 	private boolean isGameOver = false;
 
@@ -150,7 +161,7 @@ public class TowerDefenseGame extends BasicGame{
 			hpLoaded = new Rectangle(Heart_x +70 , Heart_y +13,4*HpGame,25);
 			g.setColor(new Color(0,0,0));
 			g.draw(hpLoaded);
-			g.setColor(new Color(255,0,0));
+			g.setColor(new Color(100f,0f,0f,0.3f+HpGame/100f));
 			g.fill(hpLoaded);
 	}
 	
@@ -168,9 +179,10 @@ public class TowerDefenseGame extends BasicGame{
 	
 	@Override
 	  public void keyPressed(int key, char c) {
+		if(isGameStarted && !isGameOver){
 		 if (key == Input.KEY_T) {
-				checkField++;
 		    }
+		}
 	  }
 	
 	//Update Render and init
@@ -199,7 +211,6 @@ public class TowerDefenseGame extends BasicGame{
 		isGameStarted = true;
 		
 		setBackgroundinit(container);
-		
 		darkterrain = new TerrainDarkStage(Stage_x, Stage_y);
 		cell = new Store();
 		filedbuild = new fieldBuild();
@@ -208,6 +219,7 @@ public class TowerDefenseGame extends BasicGame{
 		 entities.add(cell);
 		 entities.add(filedbuild);
 		 entities.add(doorHeart);
+		 
 	}
 
 	
@@ -246,9 +258,11 @@ public class TowerDefenseGame extends BasicGame{
 		Store.checkMouseInCell(newx, newy);
 		
 		//mouse drag on buildField
-		if(checkField%2 != 0){
+		//if(checkField%2 != 0){
+		if(checkMouseClickCell){
 				fieldBuild.checkCol_mouseXRectX = fieldBuild.checkMouseMoveX(newx-mouseError);
-				fieldBuild.checkCol_mouseXRectY = fieldBuild.checkMouseMoveX(newy+mouseError/3);
+				fieldBuild.checkCol_mouseXRectY = fieldBuild.checkMouseMoveY(newy+mouseError/3);
+				//System.out.println(fieldBuild.checkCol_mouseXRectX + " " + fieldBuild.checkCol_mouseXRectY);
 		}
 		else{
 			fieldBuild.checkCol_mouseXRectX = -1;
@@ -256,12 +270,19 @@ public class TowerDefenseGame extends BasicGame{
 		}
 	}
 	
+	
 	@Override
 	public void mousePressed(int button, int x, int y){
-		if(checkField%2 != 0 && button == 0){
+		
+		if(Store.checkMouseTower(x,y) && !checkMouseClickCell && button == 0){		//click tower in shop
+			//System.out.println(fieldBuild.checkCol_mouseXRectX);
+			checkMouseClickCell = true;
+		}
+		else if(checkMouseClickCell && button == 0){								//build tower
+			//System.out.println(fieldBuild.checkCol_mouseXRectX);
 			fieldBuild.checkCol_mouseXRectX = -1;
 			fieldBuild.checkCol_mouseXRectY = -1;
-			checkField++;
+			checkMouseClickCell = false;
 		}
 	}
 }

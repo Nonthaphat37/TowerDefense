@@ -17,7 +17,7 @@ public class Monster implements Entity{
 	protected int checkAnimation = 0;
 	protected int attackCastle;
 
-    public Monster(float x,float y){
+    public Monster(float x, float y){
 		this.x = x;
 		this.y = y;
     }

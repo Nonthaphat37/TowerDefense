@@ -1,6 +1,7 @@
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 
@@ -42,9 +43,13 @@ public class fieldBuild implements Entity{
 	
 	Rectangle[][] build;
 	
+	//Show Tower On MouseMoved
+	private static Image towershop1;
+	
 	
 	public fieldBuild() throws SlickException{
 		build = new Rectangle[x_size][y_size];
+		towershop1 = new Image("res/testTower.png");
 		
 		for(int i=0;i<x_size;i++){
 			for(int j=0;j<y_size;j++){
@@ -71,6 +76,7 @@ public class fieldBuild implements Entity{
 		return -1;
 	}
 
+	
 	private void checkPositionMouseAndRect(Graphics g){
 		Color outRect = new Color(0f,0f,0f,0f);
 		Color myAlphaColor = new Color(0f,150f,0f,0.5f);
@@ -99,9 +105,18 @@ public class fieldBuild implements Entity{
 		}
 	}
 	
+	public void drawTower(){
+		if(TowerDefenseGame.checkMouseClickCell){
+			towershop1.draw(checkCol_mouseXRectX*sizeRect,
+					(checkCol_mouseXRectY-1)*sizeRect);
+			System.out.println(checkCol_mouseXRectX);
+		}
+	}
+	
 	@Override
 	public void render(Graphics g) {
 		checkPositionMouseAndRect(g);
+		drawTower();
 	}
 
 	@Override

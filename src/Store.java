@@ -21,7 +21,15 @@ public class Store implements Entity{
 	
 	private static boolean checkmouse[] = new boolean[]{false,false,false,false,false};  // check mouse on cell
 	
+	//Tower
+	
+	private static Image towershop1;
+	
 	public Store() throws SlickException {
+		
+		towershop1 = new Image("res/testTower.png");
+		
+		
 		for(int i=0; i<cell.length;i++){
 			cell[i] = new Image("res/cell.png");
 			cellmouse[i] = new Image("res/cellmouse.png");
@@ -39,6 +47,31 @@ public class Store implements Entity{
 		}
 	}
 	
+	/*///////////////////////////////////////////////////////////////////////////////
+	//tower*/
+	public static boolean checkMouseTower(int mouseX, int mouseY){
+		int i = 0;
+		if(mouseX > x[i] && mouseX < x[i] + Store.buttonSize && mouseY > y && mouseY < y+buttonSize){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+	public void shopTower(){
+		towershop1.draw(shopXFirst,y);	//render tower1
+	}
+	
+	public void RenderShopTowerOnMouseMoved(){
+		
+	}
+	////////////////////////////////////////////////////////////////////
+	
+	
+	
+	
+	
 	@Override
 	public void render(Graphics g) {
 		
@@ -49,8 +82,9 @@ public class Store implements Entity{
 			else{
 				cellmouse[i].draw(x[i],y);
 			}
-			
 		}
+		shopTower();
+	
 	}
 	@Override
 	public void update(GameContainer container, int delta) {

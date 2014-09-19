@@ -11,7 +11,7 @@ public class MonsterLv1 extends Monster {
 	private SpriteSheet Monster2;
 	private Animation MonsterAnimation1;
 	private Animation MonsterAnimation2;
-	private int attack = 11;
+	private int attack = 1;
 
 	public MonsterLv1(float x, float y, float velocity) throws SlickException {
 		super(x, y);
