@@ -11,6 +11,7 @@ import org.newdawn.slick.SlickException;
 
 
 import org.newdawn.slick.Input; //import key if finish delete
+import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Rectangle;
 
 public class TowerDefenseGame extends BasicGame{
@@ -46,7 +47,7 @@ public class TowerDefenseGame extends BasicGame{
 	 public static float monster_startY = 156;
 	 private boolean monster_checkTotal = false;
 	private static int number_monster = 0;
-	private static int max_monster =  50;
+	private static int max_monster =  10;
 	private static float timerdelay_monster = (float) 0.5;
 	private static float timer_monster = 0;
 	 private static ArrayList<Monster> monsterAll = new ArrayList<Monster>();
@@ -74,7 +75,7 @@ public class TowerDefenseGame extends BasicGame{
 	//Store Tower
 	private static ArrayList<Tower> towerdark = new ArrayList<Tower>();
 	public static boolean checkMouseClickCell = false;
-	private int[] rangeTower = new int[1000];
+	private static ArrayList<Integer> rangeTowerdark = new ArrayList<Integer>();
 	
 	
 	//Mouse
@@ -88,6 +89,19 @@ public class TowerDefenseGame extends BasicGame{
 	//GameStart and GameOver
 	private boolean isGameStarted = false;
 	private boolean isGameOver = false;
+	
+	
+	//Upgrate
+	private boolean checkBuild = true;
+	private boolean checkMouseClick = false;
+	private int checktowerClick = -1;
+	Circle Rangetowershop1;
+	private Image plus1;
+	private Image plus2;
+	private Image plus3;
+	private Upgrate upgrate;
+	
+	
 
 	public TowerDefenseGame(String title) throws SlickException {
 		super(title);
@@ -103,6 +117,9 @@ public class TowerDefenseGame extends BasicGame{
 		darkstage = new Image("res/DarkStage.png");
 		Shopbackground = new Image("res/Shop.png");
 		Upgratebackground = new Image("res/Upgrate.png");
+		plus1 = new Image("res/Plus.png");
+		plus2 = new Image("res/Plus.png");
+		plus3 = new Image("res/Plus.png");
 
 	}
 	
@@ -205,6 +222,7 @@ public class TowerDefenseGame extends BasicGame{
 	public void mouseClickBuyItemShop(int button, int x, int y){
 		if(Store.checkMouseTower(x,y) && !checkMouseClickCell && button == 0){		//click tower in shop
 			checkMouseClickCell = true;
+			checkBuild = true;
 		}
 		else if(checkMouseClickCell && button == 0 &&
 				fieldBuild.checkCol_mouseXRectY-1 != -1 &&
@@ -221,11 +239,15 @@ public class TowerDefenseGame extends BasicGame{
 						try {
 							towerdark.add(new TowerDark(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
 									(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
+							checkBuild = false;   //click For build success
 									 for(int i=0;i<towerdark.size();i++){
 										 
+										 rangeTowerdark.add(towerdark.get(towerdark.size()-1).rangeTower);
+										
 										 if(i==towerdark.size()-1){
 											 towerdark.get(i).getNumTower(towerdark.size()-1);
 										 }
+										 
 										 
 										 //// range tower
 										 
@@ -258,6 +280,94 @@ public class TowerDefenseGame extends BasicGame{
 				fieldBuild.checkCol_mouseXRectX = -1;
 				fieldBuild.checkCol_mouseXRectY = -1;
 		}
+	}
+	
+	
+	
+	public void mouseClickForUpgrateTower(int button, int mouseX, int mouseY){
+		if(button == 0 && !checkMouseClick && !checkBuild){
+			for(int i=0;i < towerdark.size();i++){
+				if(mouseX >= towerdark.get(i).x && mouseX <= towerdark.get(i).x+78 &&
+				   mouseY >= towerdark.get(i).y && mouseY <= towerdark.get(i).y+78	){
+					Rangetowershop1 = new Circle(towerdark.get(i).x+39,towerdark.get(i).y+39,towerdark.get(i).rangeTower);
+					checkMouseClick = true;
+					checktowerClick = i;
+				}
+			}
+		}
+		else if(button == 0 && checkMouseClick && checktowerClick != -1)
+			if(mouseX >= towerdark.get(checktowerClick).x && mouseX <= towerdark.get(checktowerClick).x+78 &&
+			   mouseY >= towerdark.get(checktowerClick).y && mouseY <= towerdark.get(checktowerClick).y+78	){
+				checkMouseClick = false;
+				checktowerClick = -1;
+		}
+		
+		if(checkMouseClick && mouseX > 1730 && mouseX<1730+40 && mouseY > 85 && mouseY < 85+40){
+			upgrate = new Upgrate(towerdark.get(checktowerClick));
+			towerdark.get(checktowerClick).attackTower = upgrate.upgrateAttack();
+		}
+		else if(checkMouseClick && mouseX > 1730 && mouseX<1730+40 && mouseY > 135 && mouseY < 135+40){
+			upgrate = new Upgrate(towerdark.get(checktowerClick));
+			towerdark.get(checktowerClick).speedTower = upgrate.upgrateSpeed();
+		}
+		else if(checkMouseClick && mouseX > 1730 && mouseX<1730+40 && mouseY > 185 && mouseY < 185+40){
+			upgrate = new Upgrate(towerdark.get(checktowerClick));
+			towerdark.get(checktowerClick).rangeTower = upgrate.upgrateRange();
+			Rangetowershop1 = new Circle(towerdark.get(checktowerClick).x+39,towerdark.get(checktowerClick).y+39,towerdark.get(checktowerClick).rangeTower);
+		}
+	
+	}
+	
+	
+	
+	//Collide Bullet and Monster to Destroy bullet and monster
+	public void setCollideAndDestroy(int delta){
+		for(int i=0;i<towerdark.size();i++){
+			for(int j=0;j<bullet.get(i).size();j++){
+			 //Collide
+				if(monsterRememberBullet < monsterAll.size()){
+					 if(bullet.get(i).get(j).CollideMonster()){
+						 bullet.get(i).remove(j);
+						 monsterAll.get(monsterRememberBullet).MonsterAttacked(towerdark.get(i).getAttack(),towerdark.get(i).getElement());
+						 if(monsterAll.get(monsterRememberBullet).getDeath()){
+							 monsterAll.remove(monsterRememberBullet);
+							 towerdark.get(i).rememberNumMon = -1;
+							 towerdark.get(i).checkremember_Mon = false;
+							 for(int k=0; k < towerdark.size();k++){
+								 for(int l=0 ; l < bullet.get(k).size();l++){
+									 bullet.get(k).remove(l);
+								 }
+							 }
+						 }
+					 }
+					}
+				}
+		
+		}
+		death();
+		for (int i =0; i < monsterAll.size(); i++) {
+			for(int j=0;j<towerdark.size();j++){
+				towerdark.get(j).rangeCheck(monsterAll.get(i),i,delta);
+	
+			}
+		}
+	}
+	
+	public void drawUpgrate(Graphics g){
+		g.setColor(new Color(1f, 1f, 1f, 0f));
+		g.draw(Rangetowershop1);
+		g.setColor(new Color(1f, 1f, 1f, 0.2f));
+		g.fill(Rangetowershop1);
+		
+		g.setColor(new Color(0, 0, 0));
+		g.drawString("Attack   " + towerdark.get(checktowerClick).attackTower, 1600, 100);
+		g.drawString("Speed   " + towerdark.get(checktowerClick).speedTower, 1600, 150);
+		g.drawString("Range   " + towerdark.get(checktowerClick).rangeTower, 1600, 200);
+		g.drawString("Element   " + towerdark.get(checktowerClick).element, 1600, 250);
+		
+		plus1.draw(1730,85);
+		plus2.draw(1730,135);
+		plus3.draw(1730,185);
 	}
 	
 	
@@ -296,7 +406,9 @@ public class TowerDefenseGame extends BasicGame{
 				bullet.render(g);
 			}
 		}
-		
+		if(checkMouseClick){
+			drawUpgrate(g);	
+		}
 	}
 
 	
@@ -340,35 +452,14 @@ public class TowerDefenseGame extends BasicGame{
 					bullet.update(container, delta);
 				}
 			}
+			setCollideAndDestroy(delta);
 			
-			
-			for(int i=0;i<towerdark.size();i++){
-				for(int j=0;j<bullet.get(i).size();j++){
-				 //Collide
-					if(monsterRememberBullet < monsterAll.size()){
-						 if(bullet.get(i).get(j).CollideMonster()){
-							 bullet.get(i).remove(j);
-							 monsterAll.get(monsterRememberBullet).MonsterAttacked(towerdark.get(i).getAttack());
-							 if(monsterAll.get(monsterRememberBullet).getDeath()){
-								 monsterAll.remove(monsterRememberBullet);
-								 towerdark.get(i).rememberNumMon = -1;
-								 towerdark.get(i).checkremember_Mon = false;
-								 for(int k=0; k < towerdark.size();k++){
-									 for(int l=0 ; l < bullet.get(k).size();l++){
-										 bullet.get(k).remove(l);
-									 }
-								 }
-							 }
-						 }
-						}
+			//destroy Bullet after monster death all
+			if(monsterAll.size() == 0){
+				for(int i=0;i<towerdark.size();i++){
+					for(int j=0;j<bullet.get(i).size();j++){
+						bullet.get(i).remove(j);
 					}
-			
-			}
-				death();
-			for (int i =0; i < monsterAll.size(); i++) {
-				for(int j=0;j<towerdark.size();j++){
-					towerdark.get(j).rangeCheck(monsterAll.get(i),i,delta);
-		
 				}
 			}
 		}
@@ -387,23 +478,48 @@ public class TowerDefenseGame extends BasicGame{
 	
 	@Override
 	public void mouseMoved(int oldx, int oldy, int newx, int newy){
-		//mouse drag on cell
-		Store.checkMouseInCell(newx, newy);
+		if(isGameStarted && !isGameOver){
+			//mouse drag on cell
+			Store.checkMouseInCell(newx, newy);
 		
-		//mouse drag on buildField
-		if(checkMouseClickCell){
+			//mouse drag on buildField
+			if(checkMouseClickCell){
 				fieldBuild.checkCol_mouseXRectX = fieldBuild.checkMouseMoveX(newx-mouseError);
 				fieldBuild.checkCol_mouseXRectY = fieldBuild.checkMouseMoveY(newy+mouseError/3);
-		}
-		else{
-			fieldBuild.checkCol_mouseXRectX = -1;
-			fieldBuild.checkCol_mouseXRectY = -1;
+			}
+			else{
+				fieldBuild.checkCol_mouseXRectX = -1;
+				fieldBuild.checkCol_mouseXRectY = -1;
+			}
+			
+			//set Alpha plus
+			if(checkMouseClick){
+				if(newx >1730 && newx<1730+40 && newy > 85 && newy < 85+40){
+					plus1.setAlpha(0.8f);
+					plus2.setAlpha(1f);
+					plus3.setAlpha(1f);
+				}else if(newx >1730 && newx<1730+40 && newy > 135 && newy < 135+40){
+					plus1.setAlpha(1f);
+					plus2.setAlpha(0.8f);
+					plus3.setAlpha(1f);
+				}else if(newx >1730 && newx<1730+40 && newy > 185 && newy < 185+40){
+					plus1.setAlpha(1f);
+					plus2.setAlpha(1f);
+					plus3.setAlpha(0.8f);
+				}else{
+					plus1.setAlpha(1f);
+					plus2.setAlpha(1f);
+					plus3.setAlpha(1f);
+				}
+			}
 		}
 	}
 	
-	
 	@Override
 	public void mousePressed(int button, int x, int y){
-		mouseClickBuyItemShop(button, x, y);
+		if(isGameStarted && !isGameOver){
+			mouseClickForUpgrateTower(button, x, y);
+			mouseClickBuyItemShop(button, x, y);
+		}
 	}
 }

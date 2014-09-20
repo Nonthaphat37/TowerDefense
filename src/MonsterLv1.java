@@ -1,4 +1,5 @@
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
@@ -13,6 +14,7 @@ public class MonsterLv1 extends Monster {
 	private Animation MonsterAnimation2;
 	private int attack = 1;				//set attck Hp
 	private float v = (float)0.5;				//set velocity
+	
 	
 	
 	
@@ -39,5 +41,11 @@ public class MonsterLv1 extends Monster {
 			MonsterAnimation2.draw(x,y);
 		}
 	}
+	
+	@Override
+	public void update(GameContainer container, int delta) {
+		updateposition();
+	}
+	
 
 }

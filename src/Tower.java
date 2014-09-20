@@ -29,8 +29,10 @@ public class Tower implements Entity{
 	 
 	 //upgrate
 	 public int rangeTower = 200;
-	 protected int speedTower = 50;
-	 protected int attackTower = 10;
+	 public  int speedTower = 50;
+	 public  int speedrealTower;
+	 public  int attackTower = 10;
+	 protected int element = 0;
 	 private int calSpeed = 0;
 	 
 	 public Tower(float x, float y){
@@ -43,6 +45,9 @@ public class Tower implements Entity{
 		 return attackTower;
 	 }
 	 
+	 public int getElement(){
+		 return element;
+	 }
 	 
 	 public int getNumMon(){
 		 return rememberNumMon;
@@ -89,7 +94,8 @@ public class Tower implements Entity{
     
     private void CalSpeedTower(int delta){
     	calSpeed+=delta;
-    	if(calSpeed>=speedTower){
+    	speedrealTower = Math.abs(speedTower-1000);
+    	if(calSpeed>=speedrealTower){
     		calSpeed = 0;
     		TowerDefenseGame.setupBullet();
 			 TowerDefenseGame.releaseBullet(numTower);

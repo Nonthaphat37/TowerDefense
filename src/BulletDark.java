@@ -11,7 +11,8 @@ public class BulletDark extends Bullet {
 		// TODO Auto-generated constructor stub
 		this.x = x;
 		this.y = y;
+		
 	}
-	
+
 	
 }

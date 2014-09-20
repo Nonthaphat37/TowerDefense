@@ -18,11 +18,12 @@ public class Monster implements Entity{
 	private int checkfield2 = 0;
 	private int checkfield3 = 0;
 	
+	
+	//set everything in monster
 	protected int checkAnimation = 0;
 	protected int attackCastle;
-	
 	protected int hpMonster  = 500;
-	
+	protected int element = 0;
 
     public Monster(float x, float y){
 		this.x = x;
@@ -38,8 +39,12 @@ public class Monster implements Entity{
     }
     
     
-    public void MonsterAttacked(int attack){
-		hpMonster -= attack;
+    public void MonsterAttacked(int attack,int element){
+    	if(this.element == 0){
+    		hpMonster -= attack;
+    	}else if(this.element == 1 && element == 2){
+    		hpMonster -= attack*2;
+    	}
     }
     
     public boolean getDeath(){
