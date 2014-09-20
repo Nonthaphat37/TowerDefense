@@ -6,7 +6,7 @@ public class Monster implements Entity{
 	
 	protected float x;
 	protected float y;
-	protected float velocity = (float) 0.5;
+	protected float velocity = (float) 2;
 	private int checkfieldX = 0;
 	private int checkfieldY = 0;
 	
@@ -20,6 +20,9 @@ public class Monster implements Entity{
 	
 	protected int checkAnimation = 0;
 	protected int attackCastle;
+	
+	protected int hpMonster  = 500;
+	
 
     public Monster(float x, float y){
 		this.x = x;
@@ -32,6 +35,19 @@ public class Monster implements Entity{
     
     public float getY(){
     	return y;
+    }
+    
+    
+    public void MonsterAttacked(int attack){
+		hpMonster -= attack;
+    }
+    
+    public boolean getDeath(){
+    	if(hpMonster <= 0){
+    		return true;
+    	}else{
+        	return false;
+    	}
     }
     
 	public void positionError(int block_x,int block_y){
@@ -51,6 +67,7 @@ public class Monster implements Entity{
 			//monsterLv1.setRotation(270);
 		}
 	}
+	
 	
 	public void Start(int check_startX){
 		if(checkfieldX < 2){
@@ -163,5 +180,6 @@ public class Monster implements Entity{
 			Finish(checkfieldY);
 		}
 	}
+	
 	
 }

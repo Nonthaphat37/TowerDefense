@@ -25,6 +25,7 @@ public class TowerDefenseGame extends BasicGame{
 	
 	
 	
+	
 	private float time = 0;
 	public float timer = 0;
 	
@@ -45,10 +46,11 @@ public class TowerDefenseGame extends BasicGame{
 	 public static float monster_startY = 156;
 	 private boolean monster_checkTotal = false;
 	private static int number_monster = 0;
-	private static int max_monster = 20;
-	private static float timerdelay_monster = (float) 3;
+	private static int max_monster =  50;
+	private static float timerdelay_monster = (float) 0.5;
 	private static float timer_monster = 0;
-	 private ArrayList<Monster> monsterAll = new ArrayList<Monster>();
+	 private static ArrayList<Monster> monsterAll = new ArrayList<Monster>();
+	 
 
 	
 	//Background
@@ -70,13 +72,18 @@ public class TowerDefenseGame extends BasicGame{
 
 	
 	//Store Tower
-	private ArrayList<TowerDark> towerdark = new ArrayList<TowerDark>();
+	private static ArrayList<Tower> towerdark = new ArrayList<Tower>();
 	public static boolean checkMouseClickCell = false;
+	private int[] rangeTower = new int[1000];
 	
 	
 	//Mouse
 	private static float mouseError = 21;
 	
+	
+	//Bullet
+	private static ArrayList<ArrayList<Bullet>> bullet = new ArrayList<ArrayList<Bullet>>();	
+	private static int monsterRememberBullet = 0;
 	
 	//GameStart and GameOver
 	private boolean isGameStarted = false;
@@ -139,6 +146,7 @@ public class TowerDefenseGame extends BasicGame{
 				}
 	}
 	
+	//Monster
 	public void releaseMonster() throws SlickException{
 		if(wave == 1 && number_monster < max_monster){
 			if(!monster_checkTotal){
@@ -152,6 +160,25 @@ public class TowerDefenseGame extends BasicGame{
 			}
 		}
 	}
+	
+	
+	//release bullet
+	public static void setupBullet(){
+		for ( int i = 0; i < towerdark.size(); i++ ){
+			bullet.add(new ArrayList<Bullet>());
+		}
+	}
+	
+	public static void releaseBullet(int numTower){
+		//System.out.println(numTower);
+		bullet.get(numTower).add(new BulletDark(towerdark.get(numTower).x+39,towerdark.get(numTower).y+39));
+		 if(bullet.get(numTower).get(bullet.get(numTower).size()-1).getNumMon() == -1){
+			 monsterRememberBullet = bullet.get(numTower).get(bullet.get(numTower).size()-1).setNumMon(towerdark.get(numTower).getNumMon());
+			 bullet.get(numTower).get(bullet.get(numTower).size()-1).setMonster(monsterAll.get(monsterRememberBullet));
+		 }
+		
+	}
+
 	
 	//Draw textHp
 	public void HpLoaded(Graphics g){
@@ -189,15 +216,29 @@ public class TowerDefenseGame extends BasicGame{
 			           fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX+1] == 0 &&
 					   fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX+1] == 0){
 						
-						//add tower
+						//add tower///////////////////////////////////////////////////////////
 						
 						try {
 							towerdark.add(new TowerDark(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
 									(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
+									 for(int i=0;i<towerdark.size();i++){
+										 
+										 if(i==towerdark.size()-1){
+											 towerdark.get(i).getNumTower(towerdark.size()-1);
+										 }
+										 
+										 //// range tower
+										 
+										
+										 
+										 //setup bullet
+									 }
+									
 							}	 catch (SlickException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						
 						
 						//give red field
 						fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX] = 99;
@@ -246,9 +287,16 @@ public class TowerDefenseGame extends BasicGame{
 		for(Monster monster : monsterAll){
 			monster.render(g);
 		}	
-		for(TowerDark tower : towerdark){
+		for(Tower tower : towerdark){
 			tower.render(g);
 		}	
+		for(int i=0;i<towerdark.size();i++){
+			setupBullet();
+			for(Bullet bullet: bullet.get(i)){
+				bullet.render(g);
+			}
+		}
+		
 	}
 
 	
@@ -283,14 +331,44 @@ public class TowerDefenseGame extends BasicGame{
 			for(Monster monster : monsterAll){
 				monster.update(container, delta);
 			}
-			for(TowerDark tower : towerdark){
+			for(Tower tower : towerdark){
 				tower.update(container, delta);
 			}
-			death();
+			for(int i=0;i<towerdark.size();i++){
+				setupBullet();
+				for(Bullet bullet: bullet.get(i)){
+					bullet.update(container, delta);
+				}
+			}
+			
+			
+			for(int i=0;i<towerdark.size();i++){
+				for(int j=0;j<bullet.get(i).size();j++){
+				 //Collide
+					if(monsterRememberBullet < monsterAll.size()){
+						 if(bullet.get(i).get(j).CollideMonster()){
+							 bullet.get(i).remove(j);
+							 monsterAll.get(monsterRememberBullet).MonsterAttacked(towerdark.get(i).getAttack());
+							 if(monsterAll.get(monsterRememberBullet).getDeath()){
+								 monsterAll.remove(monsterRememberBullet);
+								 towerdark.get(i).rememberNumMon = -1;
+								 towerdark.get(i).checkremember_Mon = false;
+								 for(int k=0; k < towerdark.size();k++){
+									 for(int l=0 ; l < bullet.get(k).size();l++){
+										 bullet.get(k).remove(l);
+									 }
+								 }
+							 }
+						 }
+						}
+					}
+			
+			}
+				death();
 			for (int i =0; i < monsterAll.size(); i++) {
-				Monster temp = monsterAll.get(i);
-				for(TowerDark tower : towerdark){
-					tower.rangeCheck(temp,i);
+				for(int j=0;j<towerdark.size();j++){
+					towerdark.get(j).rangeCheck(monsterAll.get(i),i,delta);
+		
 				}
 			}
 		}

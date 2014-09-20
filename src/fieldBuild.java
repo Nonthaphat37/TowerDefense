@@ -46,7 +46,7 @@ public class fieldBuild implements Entity{
 	
 	//Show Tower On MouseMoved
 	private static Image towershop1;
-	private int Rangetower1 = 78+39;
+	private int Rangetower1 = 200;
 	Circle Rangetowershop1;
 	
 	

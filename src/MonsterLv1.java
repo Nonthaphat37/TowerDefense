@@ -13,6 +13,11 @@ public class MonsterLv1 extends Monster {
 	private Animation MonsterAnimation2;
 	private int attack = 1;				//set attck Hp
 	private float v = (float)0.5;				//set velocity
+	
+	
+	
+	
+	
 
 	public MonsterLv1(float x, float y) throws SlickException {
 		super(x, y);
