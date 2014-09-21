@@ -24,11 +24,14 @@ public class Store implements Entity{
 	
 	//Tower
 	private static Image towershop1;
+	private static Image towershop2;
+	
+	
 	
 	public Store() throws SlickException {
 		
 		towershop1 = new Image("res/testTower.png");
-		
+		towershop2 = new Image("res/testTower2.png");
 		for(int i=0; i<cell.length;i++){
 			cell[i] = new Image("res/cell.png");
 			cellmouse[i] = new Image("res/cellmouse.png");
@@ -48,18 +51,30 @@ public class Store implements Entity{
 	
 	/*///////////////////////////////////////////////////////////////////////////////
 	//tower*/
-	public static boolean checkMouseTower(int mouseX, int mouseY){
-		int i = 0;
-		if(mouseX > x[i] && mouseX < x[i] + Store.buttonSize && mouseY > y && mouseY < y+buttonSize){
-			return true;
+	public static boolean checkMouseTower(int mouseX, int mouseY, int i){
+		if(i != -1){
+			if(mouseX > x[i] && mouseX < x[i] + Store.buttonSize && mouseY > y && mouseY < y+buttonSize){
+				return true;
+			}
+			else{
+				return false;
+			}
 		}
-		else{
-			return false;
+		return false;
+	}
+
+	public static int checkClickTower(int mouseX, int mouseY){
+		for(int i=0;i<5;i++){
+			if(mouseX > x[i] && mouseX < x[i] + Store.buttonSize && mouseY > y && mouseY < y+buttonSize){
+				return i;
+			}
 		}
+		return -1;
 	}
 
 	public void shopTower(){
 		towershop1.draw(shopXFirst,y);	//render tower1
+		towershop2.draw(shopXFirst+buttonSize + cellSpace,y);
 	}
 
 	////////////////////////////////////////////////////////////////////

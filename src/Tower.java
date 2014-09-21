@@ -28,10 +28,10 @@ public class Tower implements Entity{
 	 
 	 
 	 //upgrate
-	 public int rangeTower = 200;
-	 public  int speedTower = 50;
-	 public  int speedrealTower;
-	 public  int attackTower = 10;
+	 protected int rangeTower = 200;
+	 protected  int speedTower = 50;
+	 protected int speedrealTower;
+	 protected int attackTower = 10;
 	 protected int element = 0;
 	 private int calSpeed = 0;
 	 

@@ -12,6 +12,7 @@ public class Bullet implements Entity{
 	protected float bx;
 	protected float by;
 	public int numMon = -1;
+	private boolean addvelocity = false;
 	
 	public int setNumMon(int numMon){
 		this.numMon = numMon;
@@ -23,8 +24,8 @@ public class Bullet implements Entity{
 	}
 	
 	public void setMonster(Monster m){
-		this.mx = m.getX();
-		this.my = m.getY();
+			this.mx = m.getX();
+			this.my = m.getY();
 	}
 	
 	public Bullet(float x, float y){
@@ -33,7 +34,11 @@ public class Bullet implements Entity{
 		//this.numTower = numTower;
 		
 	}
-
+	
+	private void checksearchXY(){
+			bx = SearchDirection.SearchX(mx+39,my+39,x,y,5);
+			by = SearchDirection.SearchY(my+39,my+39,x,y,5);
+	}
 	
 	
 	@Override
@@ -44,13 +49,13 @@ public class Bullet implements Entity{
 	
 	@Override
 	public void update(GameContainer container, int delta) {
-		x += SearchDirection.SearchX(mx+39,my+39,x,y,3);
-		y += SearchDirection.SearchY(my+39,my+39,x,y,3);
-		
+			checksearchXY();
+			x += bx;
+			y += by;
 	}
 	
 	public boolean CollideMonster(){
-		if(Math.abs(mx+39-x) < 40 && Math.abs(my+39-y) < 40){
+		if(Math.abs(mx+39-x) < 10 && Math.abs(my+39-y) < 10){
 			return true;
 		}
 		else{

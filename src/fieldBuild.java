@@ -46,13 +46,15 @@ public class fieldBuild implements Entity{
 	
 	//Show Tower On MouseMoved
 	private static Image towershop1;
-	private int Rangetower1 = 200;
-	Circle Rangetowershop1;
+	private static Image towershop2;
+	private int[] Rangetower = new int[]{200,300,400,500,600};
+	Circle Rangetowershop;
 	
 	
 	public fieldBuild() throws SlickException{
 		build = new Rectangle[x_size][y_size];
 		towershop1 = new Image("res/testTower.png");
+		towershop2 = new Image("res/testTower2.png");
 		
 		for(int i=0;i<x_size;i++){
 			for(int j=0;j<y_size;j++){
@@ -109,26 +111,29 @@ public class fieldBuild implements Entity{
 	}
 	
 	public void drawTower(Graphics g){
-		if(TowerDefenseGame.checkMouseClickCell && 
-			checkCol_mouseXRectX != -1 && checkCol_mouseXRectY != -1){
-			if(checkCol_mouseXRectY-1 >= 0 && checkCol_mouseXRectX+1 != 40){
-			// delete circle show range if build in red field
-				  if(fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX] == 0 &&
-					 fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX] == 0 &&
-					 fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX+1] == 0 &&
-					 fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX+1] == 0){
-										Rangetowershop1 = new Circle((checkCol_mouseXRectX+1)*sizeRect,checkCol_mouseXRectY*sizeRect,Rangetower1);
+			if(TowerDefenseGame.checkMouseClickCell && 
+					checkCol_mouseXRectX != -1 && checkCol_mouseXRectY != -1){
+				if(checkCol_mouseXRectY-1 >= 0 && checkCol_mouseXRectX+1 != 40){
+					// delete circle show range if build in red field
+					if(fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX] == 0 &&
+							fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX] == 0 &&
+							fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX+1] == 0 &&
+							fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX+1] == 0){
+										Rangetowershop = new Circle((checkCol_mouseXRectX+1)*sizeRect,checkCol_mouseXRectY*sizeRect,Rangetower[TowerDefenseGame.checkClicktower]);
 										g.setColor(new Color(1f,1f,1f,0f));
-										g.draw(Rangetowershop1);
+										g.draw(Rangetowershop);
 										g.setColor(new Color(1f,1f,1f,0.2f));
-										g.fill(Rangetowershop1);
+										g.fill(Rangetowershop);
 				   }
-
-			towershop1.draw(checkCol_mouseXRectX*sizeRect,
-					(checkCol_mouseXRectY-1)*sizeRect);
+					if(TowerDefenseGame.checkClicktower == 0){
+						towershop1.draw(checkCol_mouseXRectX*sizeRect,
+						(checkCol_mouseXRectY-1)*sizeRect);
+					}else if(TowerDefenseGame.checkClicktower == 1){
+						towershop2.draw(checkCol_mouseXRectX*sizeRect,
+						(checkCol_mouseXRectY-1)*sizeRect);
+					}
+				}
 			}
-		}
-			
 	}
 	
 	@Override

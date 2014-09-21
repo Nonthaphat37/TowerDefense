@@ -17,7 +17,7 @@ public class SearchDirection {
 	public static float SearchX(float x1, float x2, float y1, float y2, float ovx){
 		calculatorDistance(x1, x2, y1, y2);
 		dircos = (float)Math.acos(x/distance);
-			vx = (float) (ovx *2* Math.cos(dircos));
+			vx = (float) (ovx * Math.cos(dircos));
 
 		return vx;
 	}
@@ -25,7 +25,7 @@ public class SearchDirection {
 	public static float SearchY(float x1, float x2, float y1, float y2, float ovy){
 		calculatorDistance(x1, x2, y1, y2);
 		dirsin = (float)Math.asin(y/distance);
-			vy = (float) (ovy *2* Math.sin(dirsin));
+			vy = (float) (ovy * Math.sin(dirsin));
 		return vy;
 	}
 }

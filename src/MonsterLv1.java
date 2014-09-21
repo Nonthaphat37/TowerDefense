@@ -19,7 +19,6 @@ public class MonsterLv1 extends Monster {
 	
 	
 	
-	
 
 	public MonsterLv1(float x, float y) throws SlickException {
 		super(x, y);
@@ -27,6 +26,7 @@ public class MonsterLv1 extends Monster {
 		Monster2 = new SpriteSheet("res/MonsterLv1_2.png", 78, 78);
 		MonsterAnimation1 = new Animation(Monster1, 100);
 		MonsterAnimation2 = new Animation(Monster2, 100);
+		
 		//monsterLv1 = new Image("res/Monster_Lv1.png");
 		attackCastle = attack;		//set attack Hp
 		velocity = v;
