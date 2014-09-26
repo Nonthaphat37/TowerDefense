@@ -47,7 +47,10 @@ public class fieldBuild implements Entity{
 	//Show Tower On MouseMoved
 	private static Image towershop1;
 	private static Image towershop2;
-	private int[] Rangetower = new int[]{200,300,400,500,600};
+	private static Image towershop3;
+	private static Image towershop4;
+	private static Image goldbuilding;
+	private int[] Rangetower = new int[]{200,300,400,500,0};
 	Circle Rangetowershop;
 	
 	
@@ -55,6 +58,9 @@ public class fieldBuild implements Entity{
 		build = new Rectangle[x_size][y_size];
 		towershop1 = new Image("res/testTower.png");
 		towershop2 = new Image("res/testTower2.png");
+		towershop3 = new Image("res/testTower3.png");
+		towershop4 = new Image("res/testTower4.png");
+		goldbuilding = new Image("res/GoldBuilding.png");
 		
 		for(int i=0;i<x_size;i++){
 			for(int j=0;j<y_size;j++){
@@ -130,6 +136,15 @@ public class fieldBuild implements Entity{
 						(checkCol_mouseXRectY-1)*sizeRect);
 					}else if(TowerDefenseGame.checkClicktower == 1){
 						towershop2.draw(checkCol_mouseXRectX*sizeRect,
+						(checkCol_mouseXRectY-1)*sizeRect);
+					}else if(TowerDefenseGame.checkClicktower == 2){
+						towershop3.draw(checkCol_mouseXRectX*sizeRect,
+						(checkCol_mouseXRectY-1)*sizeRect);
+					}else if(TowerDefenseGame.checkClicktower == 3){
+						towershop4.draw(checkCol_mouseXRectX*sizeRect,
+						(checkCol_mouseXRectY-1)*sizeRect);
+					}else if(TowerDefenseGame.checkClicktower == 4){
+						goldbuilding.draw(checkCol_mouseXRectX*sizeRect,
 						(checkCol_mouseXRectY-1)*sizeRect);
 					}
 				}

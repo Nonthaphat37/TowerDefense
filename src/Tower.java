@@ -33,6 +33,8 @@ public class Tower implements Entity{
 	 protected int speedrealTower;
 	 protected int attackTower = 10;
 	 protected int element = 0;
+	 
+	 private int speedSecTower = 1000;
 	 private int calSpeed = 0;
 	 
 	 public Tower(float x, float y){
@@ -94,7 +96,7 @@ public class Tower implements Entity{
     
     private void CalSpeedTower(int delta){
     	calSpeed+=delta;
-    	speedrealTower = Math.abs(speedTower-1000);
+    	speedrealTower = Math.abs(speedTower-speedSecTower);
     	if(calSpeed>=speedrealTower){
     		calSpeed = 0;
     		TowerDefenseGame.setupBullet();
@@ -106,7 +108,7 @@ public class Tower implements Entity{
  	protected void getNumTower(int numTower){
  		this.numTower = numTower;
  	}
-     
+ 	
 	@Override
 	public void render(Graphics g) {
 		

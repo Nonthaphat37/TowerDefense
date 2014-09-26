@@ -39,11 +39,11 @@ public class Monster implements Entity{
     }
     
     
-    public void MonsterAttacked(int attack,int element){
+    public void MonsterAttacked(int attack, int element){
     	if(this.element == 0 && 
     			(element == 0 || element == 1 || element == 2 || element == 3)){
-    		hpMonster -= attack;
-    		//System.out.println(attack +  " " + element);
+    		hpMonster -= attack;								//if want damage very much change element this monster**
+    		//System.out.println(attack +  " " + element);  
     	}else if(this.element == 0 && element == 1){
     		hpMonster -= attack*2;
     		//System.out.println(attack +  " " + element);

@@ -5,8 +5,8 @@ import org.newdawn.slick.Graphics;
 
 public class Bullet implements Entity{
 	private int BULLET_SIZE = 5;
-	private float x;
-	private float y;
+	protected float x;
+	protected float y;
 	private float mx;
 	private float my;
 	protected float bx;

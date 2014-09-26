@@ -46,10 +46,10 @@ public class TowerDefenseGame extends BasicGame{
 	 public static float monster_startX = -78;
 	 public static float monster_startY = 156;
 	 private boolean monster_checkTotal = false;
-	private static int number_monster = 0;
-	private static int max_monster =  15;
-	private static float timerdelay_monster = (float) 3;
-	private static float timer_monster = 0;
+	 private static int number_monster = 0;
+	 private static int max_monster =  70;
+	 private static float timerdelay_monster = (float) 0.5;
+	 private static float timer_monster = 0;
 	 private static ArrayList<Monster> monsterAll = new ArrayList<Monster>();
 	 
 
@@ -66,6 +66,7 @@ public class TowerDefenseGame extends BasicGame{
 	private Rectangle hpLoaded;
 	
 	
+	
 	//Image Screen
 	private Image darkstage;
 	private Image Shopbackground;
@@ -73,9 +74,8 @@ public class TowerDefenseGame extends BasicGame{
 
 	
 	//Store Tower
-	private static ArrayList<Tower> towerdark = new ArrayList<Tower>();
+	private static ArrayList<Tower> tower = new ArrayList<Tower>();
 	public static boolean checkMouseClickCell = false;
-	private static ArrayList<Integer> rangeTowerdark = new ArrayList<Integer>();
 	public static int checkClicktower = -1;
 	
 	
@@ -94,13 +94,17 @@ public class TowerDefenseGame extends BasicGame{
 	
 	//Upgrate
 	private boolean checkBuild = false;
-	private boolean checkMouseClick = false;
+	private boolean checkMouseClicktower = false;
 	private int checktowerClick = -1;
+	private boolean checktowerClicktoCloseUpgrage = false;
 	Circle Rangetowershop1;
 	private Image plus1;
 	private Image plus2;
 	private Image plus3;
 	private Upgrate upgrate;
+	
+	//GoldBuild
+	private GoldBuilding goldbuilding;
 	
 	
 
@@ -182,19 +186,29 @@ public class TowerDefenseGame extends BasicGame{
 	
 	//release bullet
 	public static void setupBullet(){
-		for ( int i = 0; i < towerdark.size(); i++ ){
+		for ( int i = 0; i < tower.size(); i++ ){
 			bullet.add(new ArrayList<Bullet>());
 		}
 	}
 	
 	public static void releaseBullet(int numTower){
 		//System.out.println(numTower);
-		bullet.get(numTower).add(new BulletDark(towerdark.get(numTower).x+39,towerdark.get(numTower).y+39));
+		if(tower.get(numTower).getElement() == 0){
+			bullet.get(numTower).add(new BulletDark(tower.get(numTower).x+39,tower.get(numTower).y+39));
+		}
+		else if(tower.get(numTower).getElement() == 1){
+			bullet.get(numTower).add(new BulletWater(tower.get(numTower).x+39,tower.get(numTower).y+39));
+		}
+		else if(tower.get(numTower).getElement() == 2){
+			bullet.get(numTower).add(new BulletFire(tower.get(numTower).x+39,tower.get(numTower).y+39));
+		}
+		else if(tower.get(numTower).getElement() == 3){
+			bullet.get(numTower).add(new BulletEarth(tower.get(numTower).x+39,tower.get(numTower).y+39));
+		}
 		 if(bullet.get(numTower).get(bullet.get(numTower).size()-1).getNumMon() == -1){
-			 monsterRememberBullet = bullet.get(numTower).get(bullet.get(numTower).size()-1).setNumMon(towerdark.get(numTower).getNumMon());
+			 monsterRememberBullet = bullet.get(numTower).get(bullet.get(numTower).size()-1).setNumMon(tower.get(numTower).getNumMon());
 			 bullet.get(numTower).get(bullet.get(numTower).size()-1).setMonster(monsterAll.get(monsterRememberBullet));
 		 }
-		
 	}
 
 	
@@ -233,29 +247,41 @@ public class TowerDefenseGame extends BasicGame{
 				fieldBuild.checkCol_mouseXRectX != -1 &&
 				fieldBuild.checkCol_mouseXRectY != -1 &&
 				fieldBuild.checkCol_mouseXRectX+1 != -1){
-					if(fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX] == 0 &&
-					   fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX] == 0 &&
-			           fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX+1] == 0 &&
-					   fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX+1] == 0){
+			if(fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX] == 0 &&
+			   fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX] == 0 &&
+			   fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX+1] == 0 &&
+			   fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX+1] == 0){
 						
 						//add tower///////////////////////////////////////////////////////////
 						
 						try {
 							if(checkClicktower == 0){
-								towerdark.add(new TowerDark(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
+								tower.add(new TowerDark(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
 									(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
 							}
 							else if(checkClicktower == 1){
-								towerdark.add(new TowerWater(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
+								tower.add(new TowerWater(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
+										(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
+								}
+							else if(checkClicktower == 2){
+								tower.add(new TowerFire(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
+										(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
+								}
+							else if(checkClicktower == 3){
+								tower.add(new TowerEarth(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
+										(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
+								}
+							else if(checkClicktower == 4){
+								entities.add(new GoldBuilding(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
 										(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
 								}
 							checkBuild = false;   //click For build success
-									 for(int i=0;i<towerdark.size();i++){
+									 for(int i=0;i<tower.size();i++){
 										 
-										 rangeTowerdark.add(towerdark.get(towerdark.size()-1).rangeTower);
+					
 										
-										 if(i==towerdark.size()-1){
-											 towerdark.get(i).getNumTower(towerdark.size()-1);
+										 if(i==tower.size()-1){
+											 tower.get(i).getNumTower(tower.size()-1);
 										 }
 										 
 										 
@@ -286,6 +312,7 @@ public class TowerDefenseGame extends BasicGame{
 		}
 		else if(checkMouseClickCell && button == 1){
 			//remove buy
+				checkBuild = false;
 				checkMouseClickCell = false;
 				fieldBuild.checkCol_mouseXRectX = -1;
 				fieldBuild.checkCol_mouseXRectY = -1;
@@ -295,35 +322,40 @@ public class TowerDefenseGame extends BasicGame{
 	
 	
 	public void mouseClickForUpgrateTower(int button, int mouseX, int mouseY){
-		if(button == 0 && !checkMouseClick && !checkBuild){
-			for(int i=0;i < towerdark.size();i++){
-				if(mouseX >= towerdark.get(i).x && mouseX <= towerdark.get(i).x+78 &&
-				   mouseY >= towerdark.get(i).y && mouseY <= towerdark.get(i).y+78	){
-					Rangetowershop1 = new Circle(towerdark.get(i).x+39,towerdark.get(i).y+39,towerdark.get(i).rangeTower);
-					checkMouseClick = true;
+		if(button == 0 && !checkBuild && !checktowerClicktoCloseUpgrage){
+			for(int i=0;i < tower.size();i++){
+				if(mouseX >= tower.get(i).x && mouseX <= tower.get(i).x+78 &&
+				   mouseY >= tower.get(i).y && mouseY <= tower.get(i).y+78	){
+					Rangetowershop1 = new Circle(tower.get(i).x+39,tower.get(i).y+39,tower.get(i).rangeTower);
+					checkMouseClicktower = true;
+					if(checktowerClick == i){
+						checktowerClicktoCloseUpgrage = true;
+					}
 					checktowerClick = i;
+					
 				}
 			}
 		}
-		else if(button == 0 && checkMouseClick && checktowerClick != -1)
-			if(mouseX >= towerdark.get(checktowerClick).x && mouseX <= towerdark.get(checktowerClick).x+78 &&
-			   mouseY >= towerdark.get(checktowerClick).y && mouseY <= towerdark.get(checktowerClick).y+78	){
-				checkMouseClick = false;
+		if(button == 0 && checktowerClick != -1 && checktowerClicktoCloseUpgrage){
+			if(mouseX >= tower.get(checktowerClick).x && mouseX <= tower.get(checktowerClick).x+78 &&
+			   mouseY >= tower.get(checktowerClick).y && mouseY <= tower.get(checktowerClick).y+78	){
+				checkMouseClicktower = false;
 				checktowerClick = -1;
+				checktowerClicktoCloseUpgrage = false;
+			}
 		}
-		
-		if(checkMouseClick && mouseX > 1730 && mouseX<1730+40 && mouseY > 85 && mouseY < 85+40){
-			upgrate = new Upgrate(towerdark.get(checktowerClick));
-			towerdark.get(checktowerClick).attackTower = upgrate.upgrateAttack();
+		if(checkMouseClicktower && mouseX > 1730 && mouseX<1730+40 && mouseY > 85 && mouseY < 85+40){
+			upgrate = new Upgrate(tower.get(checktowerClick));
+			tower.get(checktowerClick).attackTower = upgrate.upgrateAttack();
 		}
-		else if(checkMouseClick && mouseX > 1730 && mouseX<1730+40 && mouseY > 135 && mouseY < 135+40){
-			upgrate = new Upgrate(towerdark.get(checktowerClick));
-			towerdark.get(checktowerClick).speedTower = upgrate.upgrateSpeed();
+		else if(checkMouseClicktower && mouseX > 1730 && mouseX<1730+40 && mouseY > 135 && mouseY < 135+40){
+			upgrate = new Upgrate(tower.get(checktowerClick));
+			tower.get(checktowerClick).speedTower = upgrate.upgrateSpeed();
 		}
-		else if(checkMouseClick && mouseX > 1730 && mouseX<1730+40 && mouseY > 185 && mouseY < 185+40){
-			upgrate = new Upgrate(towerdark.get(checktowerClick));
-			towerdark.get(checktowerClick).rangeTower = upgrate.upgrateRange();
-			Rangetowershop1 = new Circle(towerdark.get(checktowerClick).x+39,towerdark.get(checktowerClick).y+39,towerdark.get(checktowerClick).rangeTower);
+		else if(checkMouseClicktower && mouseX > 1730 && mouseX<1730+40 && mouseY > 185 && mouseY < 185+40){
+			upgrate = new Upgrate(tower.get(checktowerClick));
+			tower.get(checktowerClick).rangeTower = upgrate.upgrateRange();
+			Rangetowershop1 = new Circle(tower.get(checktowerClick).x+39,tower.get(checktowerClick).y+39,tower.get(checktowerClick).rangeTower);
 		}
 	
 	}
@@ -332,18 +364,18 @@ public class TowerDefenseGame extends BasicGame{
 	
 	//Collide Bullet and Monster to Destroy bullet and monster
 	public void setCollideAndDestroy(int delta){
-		for(int i=0;i<towerdark.size();i++){
+		for(int i=0;i<tower.size();i++){
 			for(int j=0;j<bullet.get(i).size();j++){
 			 //Collide
 				if(monsterRememberBullet < monsterAll.size()){
 					 if(bullet.get(i).get(j).CollideMonster()){
 						 bullet.get(i).remove(j);
-						 monsterAll.get(monsterRememberBullet).MonsterAttacked(towerdark.get(i).getAttack(),towerdark.get(i).getElement());
+						 monsterAll.get(monsterRememberBullet).MonsterAttacked(tower.get(i).getAttack(),tower.get(i).getElement());
 						 if(monsterAll.get(monsterRememberBullet).getDeath()){
 							 monsterAll.remove(monsterRememberBullet);
-							 towerdark.get(i).rememberNumMon = -1;
-							 towerdark.get(i).checkremember_Mon = false;
-							 for(int k=0; k < towerdark.size();k++){
+							 tower.get(i).rememberNumMon = -1;
+							 tower.get(i).checkremember_Mon = false;
+							 for(int k=0; k < tower.size();k++){
 								 bullet.get(k).removeAll(bullet);
 							 }
 						 }
@@ -354,8 +386,8 @@ public class TowerDefenseGame extends BasicGame{
 		}
 		death();
 		for (int i =0; i < monsterAll.size(); i++) {
-			for(int j=0;j<towerdark.size();j++){
-				towerdark.get(j).rangeCheck(monsterAll.get(i),i,delta);
+			for(int j=0;j<tower.size();j++){
+				tower.get(j).rangeCheck(monsterAll.get(i),i,delta);
 	
 			}
 		}
@@ -368,10 +400,10 @@ public class TowerDefenseGame extends BasicGame{
 		g.fill(Rangetowershop1);
 		
 		g.setColor(new Color(0, 0, 0));
-		g.drawString("Attack   " + towerdark.get(checktowerClick).attackTower, 1600, 100);
-		g.drawString("Speed   " + towerdark.get(checktowerClick).speedTower, 1600, 150);
-		g.drawString("Range   " + towerdark.get(checktowerClick).rangeTower, 1600, 200);
-		g.drawString("Element   " + towerdark.get(checktowerClick).element, 1600, 250);
+		g.drawString("Attack   " + tower.get(checktowerClick).attackTower, 1600, 100);
+		g.drawString("Speed   " + tower.get(checktowerClick).speedTower, 1600, 150);
+		g.drawString("Range   " + tower.get(checktowerClick).rangeTower, 1600, 200);
+		g.drawString("Element   " + tower.get(checktowerClick).element, 1600, 250);
 		
 		plus1.draw(1730,85);
 		plus2.draw(1730,135);
@@ -405,16 +437,16 @@ public class TowerDefenseGame extends BasicGame{
 		for(Monster monster : monsterAll){
 			monster.render(g);
 		}	
-		for(Tower tower : towerdark){
+		for(Tower tower : tower){
 			tower.render(g);
 		}	
-		for(int i=0;i<towerdark.size();i++){
+		for(int i=0;i<tower.size();i++){
 			setupBullet();
 			for(Bullet bullet: bullet.get(i)){
 				bullet.render(g);
 			}
 		}
-		if(checkMouseClick){
+		if(checkMouseClicktower){
 			drawUpgrate(g);	
 		}
 	}
@@ -451,10 +483,10 @@ public class TowerDefenseGame extends BasicGame{
 			for(Monster monster : monsterAll){
 				monster.update(container, delta);
 			}
-			for(Tower tower : towerdark){
+			for(Tower tower : tower){
 				tower.update(container, delta);
 			}
-			for(int i=0;i<towerdark.size();i++){
+			for(int i=0;i<tower.size();i++){
 				setupBullet();
 				for(Bullet bullet: bullet.get(i)){
 					bullet.update(container, delta);
@@ -464,7 +496,7 @@ public class TowerDefenseGame extends BasicGame{
 			
 			//destroy Bullet after monster death all
 			if(monsterAll.size() == 0){
-				for(int i=0;i<towerdark.size();i++){
+				for(int i=0;i<tower.size();i++){
 					for(int j=0;j<bullet.get(i).size();j++){
 						bullet.get(i).remove(j);
 					}
@@ -477,7 +509,7 @@ public class TowerDefenseGame extends BasicGame{
 		try {
 		      TowerDefenseGame game = new TowerDefenseGame("TowerDefenseGame");
 		      AppGameContainer appgc = new AppGameContainer(game);
-		      appgc.setDisplayMode(Screen_Width, Screen_Height, false);
+		      appgc.setDisplayMode(Screen_Width, Screen_Height, true);
 		      appgc.start();
 		    } catch (SlickException e) {
 		      e.printStackTrace();
@@ -501,7 +533,7 @@ public class TowerDefenseGame extends BasicGame{
 			}
 			
 			//set Alpha plus
-			if(checkMouseClick){
+			if(checkMouseClicktower){
 				if(newx >1730 && newx<1730+40 && newy > 85 && newy < 85+40){
 					plus1.setAlpha(0.8f);
 					plus2.setAlpha(1f);

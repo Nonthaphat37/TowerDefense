@@ -25,6 +25,9 @@ public class Store implements Entity{
 	//Tower
 	private static Image towershop1;
 	private static Image towershop2;
+	private static Image towershop3;
+	private static Image towershop4;
+	private static Image goldbuilding;
 	
 	
 	
@@ -32,6 +35,9 @@ public class Store implements Entity{
 		
 		towershop1 = new Image("res/testTower.png");
 		towershop2 = new Image("res/testTower2.png");
+		towershop3 = new Image("res/testTower3.png");
+		towershop4 = new Image("res/testTower4.png");
+		goldbuilding = new Image("res/GoldBuilding.png");
 		for(int i=0; i<cell.length;i++){
 			cell[i] = new Image("res/cell.png");
 			cellmouse[i] = new Image("res/cellmouse.png");
@@ -75,6 +81,9 @@ public class Store implements Entity{
 	public void shopTower(){
 		towershop1.draw(shopXFirst,y);	//render tower1
 		towershop2.draw(shopXFirst+buttonSize + cellSpace,y);
+		towershop3.draw(shopXFirst+2*(buttonSize + cellSpace),y);
+		towershop4.draw(shopXFirst+3*(buttonSize + cellSpace),y);
+		goldbuilding.draw(shopXFirst+4*(buttonSize+cellSpace),y);
 	}
 
 	////////////////////////////////////////////////////////////////////

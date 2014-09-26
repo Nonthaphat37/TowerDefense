@@ -1,22 +1,23 @@
 import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
 
-public class BulletDark extends Bullet {
+
+public class BulletEarth extends Bullet {
 	
 	private int BULLET_SIZE = 5;
 	
-	
-	public BulletDark(float x, float y) {
+	public BulletEarth(float x, float y) {
 		super(x, y);
 		// TODO Auto-generated constructor stub
+		
 	}
 	
 	@Override
 	public void render(Graphics g) {
-		g.setColor(new Color(200, 100, 0));
+		g.setColor(new Color(50, 255, 100));
 		 g.fillOval(x, y, BULLET_SIZE, BULLET_SIZE);
 	}
+
 	
 }
