@@ -1,5 +1,7 @@
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Rectangle;
 
 
 public class Monster implements Entity{
@@ -24,6 +26,8 @@ public class Monster implements Entity{
 	protected int attackCastle;
 	protected int hpMonster  = 500;
 	protected int element = 0;
+	
+	private Rectangle hpBar;
 
     public Monster(float x, float y){
 		this.x = x;
@@ -71,7 +75,7 @@ public class Monster implements Entity{
 		}
 		else{
 			y-=velocity;
-			checkAnimation = 1;
+			checkAnimation = 2;
 			//monsterLv1.setRotation(270);
 		}
 	}
@@ -92,7 +96,7 @@ public class Monster implements Entity{
 		if(checkfieldY > -2){
 			//monsterLv1.setRotation(270);
 			y-=velocity;
-			checkAnimation = 1;
+			checkAnimation = 2;
 		}
 		else{
 			TowerDefenseGame.HpGame -= attackCastle ;
@@ -103,30 +107,31 @@ public class Monster implements Entity{
 		}
 		
 	}
-
+	
 	@Override
 	public void render(Graphics g) {
 		
 	}
-
+	
 	@Override
 	public void update(GameContainer container, int delta) {
 		updateposition();
 	}
 	
 	protected void updateposition(){
-		checkfieldX = (int)(x/fieldBuild.sizeRect);
-		checkfieldY = (int)(y/fieldBuild.sizeRect);
-		if(errorStarted){
-			Start(checkfieldX);
-		}
-		else if(checkfieldX == 32 && checkfieldY == 1){
-			errorFinish = true;
-		}
-		else if(!errorFinish){
-			if(errorPosition){
-				positionError(checkfieldX,checkfieldY);
+		if(TowerDefenseGame.typeRunes != 1){
+			checkfieldX = (int)(x/fieldBuild.sizeRect);
+			checkfieldY = (int)(y/fieldBuild.sizeRect);
+			if(errorStarted){
+				Start(checkfieldX);
 			}
+			else if(checkfieldX == 32 && checkfieldY == 1){
+				errorFinish = true;
+			}
+			else if(!errorFinish){
+				if(errorPosition){
+					positionError(checkfieldX,checkfieldY);
+				}
 			else{
 				if(fieldBuild.fieldTerrain[checkfieldY-1][checkfieldX] == fieldBuild.fieldTerrain[checkfieldY][checkfieldX]
 						&& fieldBuild.fieldTerrain[checkfieldY-1][checkfieldX] != 1
@@ -166,12 +171,12 @@ public class Monster implements Entity{
 						}
 						else if(checkfield1 > checkfield2){
 							y+=velocity;
-							checkAnimation = 0;
+							checkAnimation = 1;
 							//monsterLv1.setRotation(90);
 						}
 						else if(checkfield3 > checkfield2){
 							y-=velocity;
-							checkAnimation = 1;
+							checkAnimation = 2;
 							
 							//monsterLv1.setRotation(270);
 							
@@ -179,14 +184,22 @@ public class Monster implements Entity{
 						/*else if(fieldBuild.fieldTerrain[checkfieldY][checkfieldX-2] == 1){
 							x--;
 						}*/
-					}
-				}	
+					  }
+				    }	
+				}
 			}
 		}
-		
 		if(errorFinish){
 			Finish(checkfieldY);
 		}
+	}
+	
+	protected void HpBar(Graphics g){
+		hpBar = new Rectangle(x+14,y+3,(float)(hpMonster/10),4);
+		g.setColor(new Color(0,0,0));
+		g.draw(hpBar);
+		g.setColor(new Color(200,0,0));
+		g.fill(hpBar);
 	}
 	
 	

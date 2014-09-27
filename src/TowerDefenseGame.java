@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Random;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
@@ -47,7 +48,7 @@ public class TowerDefenseGame extends BasicGame{
 	 public static float monster_startY = 156;
 	 private boolean monster_checkTotal = false;
 	 private static int number_monster = 0;
-	 private static int max_monster =  70;
+	 private static int[] max_monsterwave =  new int[]{10,1};
 	 private static float timerdelay_monster = (float) 0.5;
 	 private static float timer_monster = 0;
 	 private static ArrayList<Monster> monsterAll = new ArrayList<Monster>();
@@ -103,9 +104,16 @@ public class TowerDefenseGame extends BasicGame{
 	private Image plus3;
 	private Upgrate upgrate;
 	
-	//GoldBuild
+	//GoldBuild and Goldsystem
 	private GoldBuilding goldbuilding;
 	
+	//Rune System
+	private static ArrayList<Rune> runes = new ArrayList<Rune>();
+	public static int typeRunes = 0;
+	private float TimingForRunes = 4;
+	private boolean checkTimeRunes = false;
+	private Rectangle timingRectangle;
+	private float timingShowRenderRectangle = 0;
 	
 
 	public TowerDefenseGame(String title) throws SlickException {
@@ -150,29 +158,72 @@ public class TowerDefenseGame extends BasicGame{
 		}
 	}
 	
-	public void Timer(int delta){
+	public void Timer(int delta) throws SlickException{
 		//time in Game
-				time += delta;
+				if(typeRunes != 1){
+					time += delta;	
+				}
+				timingShowRenderRectangle -= delta;
 				if(time > 500){
 					time = 0;
 					timer += 0.5;
 					ChangeResolutionBg();
 					if(currentWave != 0 && Math.ceil(timer) - timer != 0.5){
+						checkWave = true;
 						currentWave--;
+						if(currentWave == 7){
+							releaseRune();
+						}
 					}
 					if(checkWave && currentWave == 0){
 						wave++;
-						currentWave = 5;
+						number_monster = 0;          //release monster wave2
+						monster_checkTotal = false;  //release monster wave2
+						currentWave = 10;
 					    checkWave = false;
 					}
 				}
+
+				timingRunes();
+	}
+	
+	//Rune
+	public void releaseRune() throws SlickException{
+		//if(wave == 1){
+			Random random = new Random();
+			float releaseX = 800+random.nextInt(400);
+			runes.add(new RuneTiming(releaseX,0));
+		//}
+	}
+	
+	public void timingRunes(){
+		if(typeRunes > 0){
+			if(!checkTimeRunes){
+				checkTimeRunes = true;
+			}
+			else if(timingShowRenderRectangle <= 0){
+				checkTimeRunes = false;
+				typeRunes = 0;
+			}
+		}
 	}
 	
 	//Monster
 	public void releaseMonster() throws SlickException{
-		if(wave == 1 && number_monster < max_monster){
+		if(wave == 1 && number_monster < max_monsterwave[0]){
 			if(!monster_checkTotal){
-				monsterAll.add(new MonsterLv1(monster_startX, monster_startY));
+				monsterAll.add(new MonsterLv1Boss(monster_startX, monster_startY));
+				monster_checkTotal = true;			// check monster release
+				timer_monster = timer+timerdelay_monster;
+				number_monster++;
+			}
+			else if(timer_monster == timer){
+				monster_checkTotal = false;			// check monster release
+			}
+		}
+		else if(wave == 2 && number_monster < max_monsterwave[1]){
+			if(!monster_checkTotal){
+				monsterAll.add(new MonsterLv1Boss(monster_startX, monster_startY));
 				monster_checkTotal = true;			// check monster release
 				timer_monster = timer+timerdelay_monster;
 				number_monster++;
@@ -440,17 +491,36 @@ public class TowerDefenseGame extends BasicGame{
 		for(Tower tower : tower){
 			tower.render(g);
 		}	
+		for(Rune rune : runes){
+			rune.render(g);
+		}
 		for(int i=0;i<tower.size();i++){
 			setupBullet();
 			for(Bullet bullet: bullet.get(i)){
 				bullet.render(g);
 			}
 		}
+		if(typeRunes > 0){
+			RenderTimngRune(g);
+		}
+		else{
+			timingShowRenderRectangle = TimingForRunes*1000;
+		}
 		if(checkMouseClicktower){
 			drawUpgrate(g);	
 		}
 	}
 
+	
+	public void RenderTimngRune(Graphics g){
+		if(timingShowRenderRectangle > 0){
+			timingRectangle = new Rectangle(0,0,Stage_Width,Stage_Height);
+			g.setColor(new Color(255f,255f,255f,0f));
+			g.draw(timingRectangle);
+			g.setColor(new Color(255f,255f,255f,(timingShowRenderRectangle/(TimingForRunes*2000))));
+			g.fill(timingRectangle);
+		}
+	}
 	
 	@Override
 	public void init(GameContainer container) throws SlickException {
@@ -479,12 +549,15 @@ public class TowerDefenseGame extends BasicGame{
 			}
 			for (Entity entity : entities) {
 			      entity.update(container, delta);
-			    }
+			}
 			for(Monster monster : monsterAll){
-				monster.update(container, delta);
+			   	   monster.update(container, delta);
 			}
 			for(Tower tower : tower){
 				tower.update(container, delta);
+			}
+			for(Rune rune : runes){
+				rune.update(container, delta);
 			}
 			for(int i=0;i<tower.size();i++){
 				setupBullet();
@@ -559,6 +632,13 @@ public class TowerDefenseGame extends BasicGame{
 	@Override
 	public void mousePressed(int button, int x, int y){
 		if(isGameStarted && !isGameOver){
+			for(int i = 0;i<runes.size();i++){
+				if(button == 0 && runes.get(i).getClick(x, y)){
+					typeRunes = runes.get(i).getTypeRunes();
+					runes.remove(i);
+				}
+			}
+			
 			mouseClickForUpgrateTower(button, x, y);
 			mouseClickBuyItemShop(button, x, y);
 		}

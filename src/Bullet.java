@@ -55,7 +55,7 @@ public class Bullet implements Entity{
 	}
 	
 	public boolean CollideMonster(){
-		if(Math.abs(mx+39-x) < 10 && Math.abs(my+39-y) < 10){
+		if(Math.abs(mx+39-x) < 30 && Math.abs(my+39-y) < 30){
 			return true;
 		}
 		else{
