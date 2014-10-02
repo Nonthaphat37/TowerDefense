@@ -18,5 +18,4 @@ public class BulletDark extends Bullet {
 		g.setColor(new Color(200, 100, 0));
 		 g.fillOval(x, y, BULLET_SIZE, BULLET_SIZE);
 	}
-	
 }

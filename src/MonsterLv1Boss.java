@@ -20,7 +20,7 @@ public class MonsterLv1Boss extends Monster {
 	private Animation MonsterSkillAnimation;
 	private int timeSkill = 0;
 	private boolean skillShow = false;
-	private int hpMonsterthis = 2000000;
+	private int hpMonsterthis = 200000;
 	private boolean checkrunes = true;
 
 
@@ -74,11 +74,11 @@ public class MonsterLv1Boss extends Monster {
 	
 	
 	public void skill(int delta){
-		if(hpMonster <= 500){
+		if(hpMonster <= 50000){
 			skillShow = true;
 			timeSkill += delta;
 			if(timeSkill >= 1000){
-				v = (float) 1.2;
+				v = (float) 2;
 				velocity = v;
 			}
 			else{

@@ -109,6 +109,10 @@ public class TowerDefenseGame extends BasicGame{
 	
 	//GoldBuild and Goldsystem
 	private GoldBuilding goldbuilding;
+
+	//GoldSystem
+	public static int Gold = 0;
+	public static int[] priceTower = {10,20,200,10,0};
 	
 	//Rune System
 	private static ArrayList<Rune> runes = new ArrayList<Rune>();
@@ -144,7 +148,6 @@ public class TowerDefenseGame extends BasicGame{
 		plus1 = new Image("res/Plus.png");
 		plus2 = new Image("res/Plus.png");
 		plus3 = new Image("res/Plus.png");
-
 	}
 	
 	public void setBackgroundRender(Graphics g){
@@ -334,9 +337,10 @@ public class TowerDefenseGame extends BasicGame{
 		if(!checkBuild){
 			checkClicktower = Store.checkClickTower(x, y);
 		}
-		if(Store.checkMouseTower(x,y,checkClicktower) && !checkMouseClickCell && button == 0){		//click tower in shop
+		if(Store.checkMouseTower(x,y,checkClicktower) && !checkMouseClickCell && button == 0 && Gold >= priceTower[checkClicktower]){		//click tower in shop
 			checkMouseClickCell = true;
 			checkBuild = true;
+			
 		}
 		else if(checkMouseClickCell && button == 0 &&
 				fieldBuild.checkCol_mouseXRectY-1 != -1 &&
@@ -351,25 +355,30 @@ public class TowerDefenseGame extends BasicGame{
 						//add tower///////////////////////////////////////////////////////////
 						
 						try {
-							if(checkClicktower == 0){
+							if(checkClicktower == 0 && Gold >= priceTower[0]){
 								tower.add(new TowerDark(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
 									(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
+								Gold -= priceTower[0];
 							}
-							else if(checkClicktower == 1){
+							else if(checkClicktower == 1 && Gold >= priceTower[1]){
 								tower.add(new TowerWater(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
 										(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
+								Gold -= priceTower[1];
 								}
-							else if(checkClicktower == 2){
+							else if(checkClicktower == 2 && Gold >= priceTower[2]){
 								tower.add(new TowerFire(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
 										(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
+								Gold -= priceTower[2];
 								}
-							else if(checkClicktower == 3){
+							else if(checkClicktower == 3 && Gold >= priceTower[3]){
 								tower.add(new TowerEarth(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
 										(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
+								Gold -= priceTower[3];
 								}
-							else if(checkClicktower == 4){
+							else if(checkClicktower == 4 && Gold >= priceTower[4]){
 								entities.add(new GoldBuilding(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
 										(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
+								Gold -= priceTower[4];
 								}
 							checkBuild = false;   //click For build success
 									 for(int i=0;i<tower.size();i++){
@@ -529,7 +538,7 @@ public class TowerDefenseGame extends BasicGame{
 	@Override
 	public void render(GameContainer container, Graphics g) throws SlickException {
 		setBackgroundRender(g);
-		
+		GoldSystemRender(g);
 		//draw textWave
 		g.drawString("Wave   " + wave, 1300, 850);
 		g.drawString("Next Wave  " + currentWave, 1300, 870);
@@ -589,6 +598,17 @@ public class TowerDefenseGame extends BasicGame{
 			}
 		}
 	}
+	
+	
+	//Gold System
+	public void GoldSystemRender(Graphics g){
+		g.drawString("" + Gold, 980, 815);
+	}
+	
+	public void GoldUpdate(){
+		
+	}
+	
 	
 	@Override
 	public void init(GameContainer container) throws SlickException {

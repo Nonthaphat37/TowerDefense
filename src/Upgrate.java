@@ -11,21 +11,20 @@ public class Upgrate{
 		upgrateRangetower = t.rangeTower;
 		upgrateSpeedtower = t.speedTower;
 		upgrateAttacktower = t.attackTower;
-		
 	}
 	
 	public int upgrateAttack(){
-		upgrateAttacktower += 10;
+		upgrateAttacktower += 50;
 		return upgrateAttacktower;
 	}
 	
 	public int upgrateSpeed(){
-		upgrateSpeedtower += 10;
+		upgrateSpeedtower += 20;
 		return upgrateSpeedtower;
 	}
 	
 	public int upgrateRange(){
-		upgrateRangetower += 10;
+		upgrateRangetower += 20;
 		return upgrateRangetower;
 	}	
 }

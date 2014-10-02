@@ -55,6 +55,7 @@ public class fieldBuild implements Entity{
 	Circle Rangetowershop;
 	
 	
+	
 	public fieldBuild() throws SlickException{
 		build = new Rectangle[x_size][y_size];
 		towershop1 = new Image("res/testTower.png");
@@ -119,7 +120,8 @@ public class fieldBuild implements Entity{
 	
 	public void drawTower(Graphics g){
 			if(TowerDefenseGame.checkMouseClickCell && 
-					checkCol_mouseXRectX != -1 && checkCol_mouseXRectY != -1){
+					checkCol_mouseXRectX != -1 && checkCol_mouseXRectY != -1
+					&& TowerDefenseGame.Gold >= TowerDefenseGame.priceTower[TowerDefenseGame.checkClicktower]){
 				if(checkCol_mouseXRectY-1 >= 0 && checkCol_mouseXRectX+1 != 40){
 					// delete circle show range if build in red field
 					if(fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX] == 0 &&
