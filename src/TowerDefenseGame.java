@@ -52,24 +52,27 @@ public class TowerDefenseGame extends BasicGame{
 	 private static float timerdelay_monster = (float) 0.5;
 	 private static float timer_monster = 0;
 	 private static ArrayList<Monster> monsterAll = new ArrayList<Monster>();
-	 
+	 private ArrayList<MonsterDie> monsterdies = new ArrayList<MonsterDie>();
 
-	
+
 	//Background
 	private static float changeResolutionBg = 1;
 	private static int checkResolutionBg = 1;
 	
 	
 	//Hp game use in Door
+	public int HpGameMax = 150;
 	public static int HpGame = 100;
 	private int Heart_x = 1300;
 	private int Heart_y = 920;
 	private Rectangle hpLoaded;
+	private Rectangle hpLoadedOver;
 	
 	
 	
 	//Image Screen
 	private Image darkstage;
+	private Image woodstage;
 	private Image Shopbackground;
 	private Image Upgratebackground;
 
@@ -113,7 +116,14 @@ public class TowerDefenseGame extends BasicGame{
 	private float TimingForRunes = 4;
 	private boolean checkTimeRunes = false;
 	private Rectangle timingRectangle;
+	private Rectangle timingBar;
 	private float timingShowRenderRectangle = 0;
+	private float timingForDestroyRunes = 5;
+	private float timingCountDestroyRunes = 5;
+	private boolean checkReleaseRunes = false;
+	
+	private float timeDecreaseHpOver = 2000;
+	private float timeToDecreaseHpOver = timeDecreaseHpOver;
 	
 
 	public TowerDefenseGame(String title) throws SlickException {
@@ -128,6 +138,7 @@ public class TowerDefenseGame extends BasicGame{
 		Color background = new Color(0, 0, 0);
 		container.getGraphics().setBackground(background);
 		darkstage = new Image("res/DarkStage.png");
+		woodstage = new Image("res/WoodStage.png");
 		Shopbackground = new Image("res/Shop.png");
 		Upgratebackground = new Image("res/Upgrate.png");
 		plus1 = new Image("res/Plus.png");
@@ -138,7 +149,12 @@ public class TowerDefenseGame extends BasicGame{
 	
 	public void setBackgroundRender(Graphics g){
 		g.setColor(new Color(0, 0, 0));
-		darkstage.draw(Stage_x, Stage_y);
+		if(wave == 1){
+			darkstage.draw(Stage_x, Stage_y);
+		}
+		else if(wave >= 2){
+			woodstage.draw(Stage_x, Stage_y);
+		}
 		Shopbackground.draw(30, Stage_Height+10);
 		Upgratebackground.draw(Stage_Width+3, 0);
 	}
@@ -182,17 +198,40 @@ public class TowerDefenseGame extends BasicGame{
 						currentWave = 10;
 					    checkWave = false;
 					}
+					
+					if(checkReleaseRunes){
+						timingCountDestroyRunes -= 0.5;
+						if(timingCountDestroyRunes <= 0){
+							for(int i=0;i<runes.size();i++){
+								runes.remove(i);
+							}
+						}
+					}
+					
+					if(runes.size() == 0){
+						checkReleaseRunes = false;
+						timingCountDestroyRunes = timingForDestroyRunes;
+					}
 				}
-
 				timingRunes();
 	}
-	
+
 	//Rune
 	public void releaseRune() throws SlickException{
-		//if(wave == 1){
-			Random random = new Random();
-			float releaseX = 800+random.nextInt(400);
+		Random random = new Random();
+		float releaseX = 200+random.nextInt(1100);
+		int checkrunes = 1+random.nextInt(3);
+		if(checkrunes == 1){
 			runes.add(new RuneTiming(releaseX,0));
+		}
+		else if(checkrunes == 2){
+			runes.add(new RuneAttack(releaseX,0));
+		}
+		else if(checkrunes == 3){
+			runes.add(new RuneHp(releaseX,0));
+		}
+		//if(wave == 1){
+			checkReleaseRunes = true;
 		//}
 	}
 	
@@ -212,7 +251,7 @@ public class TowerDefenseGame extends BasicGame{
 	public void releaseMonster() throws SlickException{
 		if(wave == 1 && number_monster < max_monsterwave[0]){
 			if(!monster_checkTotal){
-				monsterAll.add(new MonsterLv1Boss(monster_startX, monster_startY));
+				monsterAll.add(new MonsterLv1(monster_startX, monster_startY));
 				monster_checkTotal = true;			// check monster release
 				timer_monster = timer+timerdelay_monster;
 				number_monster++;
@@ -256,7 +295,7 @@ public class TowerDefenseGame extends BasicGame{
 		else if(tower.get(numTower).getElement() == 3){
 			bullet.get(numTower).add(new BulletEarth(tower.get(numTower).x+39,tower.get(numTower).y+39));
 		}
-		 if(bullet.get(numTower).get(bullet.get(numTower).size()-1).getNumMon() == -1){
+		if(bullet.get(numTower).get(bullet.get(numTower).size()-1).getNumMon() == -1){
 			 monsterRememberBullet = bullet.get(numTower).get(bullet.get(numTower).size()-1).setNumMon(tower.get(numTower).getNumMon());
 			 bullet.get(numTower).get(bullet.get(numTower).size()-1).setMonster(monsterAll.get(monsterRememberBullet));
 		 }
@@ -267,11 +306,17 @@ public class TowerDefenseGame extends BasicGame{
 	public void HpLoaded(Graphics g){
 			g.setColor(new Color(255, 0, 0));
 			g.drawString("" + HpGame + "/100",Heart_x +75 , Heart_y-7);
-			hpLoaded = new Rectangle(Heart_x +70 , Heart_y +13,4*HpGame,25);
+			hpLoaded = new Rectangle(Heart_x +70 , Heart_y +13,3*HpGame,25);
 			g.setColor(new Color(0,0,0));
 			g.draw(hpLoaded);
 			g.setColor(new Color(100f,0f,0f,0.3f+HpGame/100f));
 			g.fill(hpLoaded);
+			if(HpGame > 100){
+				g.setColor(new Color(255, 0, 0));
+				hpLoadedOver = new Rectangle(Heart_x + 370 , Heart_y +13,3*(HpGame-100),25);
+				g.setColor(new Color(100f,255f,0f,0.3f+(HpGame-100)/100f));
+				g.fill(hpLoadedOver);
+			}
 	}
 	
 	public void death(){
@@ -382,8 +427,7 @@ public class TowerDefenseGame extends BasicGame{
 					if(checktowerClick == i){
 						checktowerClicktoCloseUpgrage = true;
 					}
-					checktowerClick = i;
-					
+					checktowerClick = i;		
 				}
 			}
 		}
@@ -414,7 +458,7 @@ public class TowerDefenseGame extends BasicGame{
 	
 	
 	//Collide Bullet and Monster to Destroy bullet and monster
-	public void setCollideAndDestroy(int delta){
+	public void setCollideAndDestroy(int delta) throws SlickException{
 		for(int i=0;i<tower.size();i++){
 			for(int j=0;j<bullet.get(i).size();j++){
 			 //Collide
@@ -423,6 +467,8 @@ public class TowerDefenseGame extends BasicGame{
 						 bullet.get(i).remove(j);
 						 monsterAll.get(monsterRememberBullet).MonsterAttacked(tower.get(i).getAttack(),tower.get(i).getElement());
 						 if(monsterAll.get(monsterRememberBullet).getDeath()){
+							 monsterdies.add(new MonsterDie(monsterAll.get(monsterRememberBullet).x, monsterAll.get(monsterRememberBullet).y, 
+									 						monsterAll.get(monsterRememberBullet).typeMonster, monsterAll.get(monsterRememberBullet).checkAnimation));
 							 monsterAll.remove(monsterRememberBullet);
 							 tower.get(i).rememberNumMon = -1;
 							 tower.get(i).checkremember_Mon = false;
@@ -450,8 +496,17 @@ public class TowerDefenseGame extends BasicGame{
 		g.setColor(new Color(1f, 1f, 1f, 0.2f));
 		g.fill(Rangetowershop1);
 		
-		g.setColor(new Color(0, 0, 0));
-		g.drawString("Attack   " + tower.get(checktowerClick).attackTower, 1600, 100);
+		if(typeRunes == 2){
+			g.setColor(new Color(0, 255, 150));
+			g.drawString("(+ " + tower.get(checktowerClick).attackTower + ")", 1780, 100);
+			g.setColor(new Color(0, 0, 0));
+			g.drawString("Attack   " + tower.get(checktowerClick).attackTower*2, 1600, 100);
+		}
+		else{
+			g.setColor(new Color(0, 0, 0));
+			g.drawString("Attack   " + tower.get(checktowerClick).attackTower, 1600, 100);
+		}
+		
 		g.drawString("Speed   " + tower.get(checktowerClick).speedTower, 1600, 150);
 		g.drawString("Range   " + tower.get(checktowerClick).rangeTower, 1600, 200);
 		g.drawString("Element   " + tower.get(checktowerClick).element, 1600, 250);
@@ -485,9 +540,14 @@ public class TowerDefenseGame extends BasicGame{
 		for(Entity entity : entities) {
 			entity.render(g);
 		}
+		for(MonsterDie monsterdie : monsterdies){
+			monsterdie.render(g);
+		}	
 		for(Monster monster : monsterAll){
 			monster.render(g);
 		}	
+		
+		
 		for(Tower tower : tower){
 			tower.render(g);
 		}	
@@ -514,11 +574,19 @@ public class TowerDefenseGame extends BasicGame{
 	
 	public void RenderTimngRune(Graphics g){
 		if(timingShowRenderRectangle > 0){
-			timingRectangle = new Rectangle(0,0,Stage_Width,Stage_Height);
-			g.setColor(new Color(255f,255f,255f,0f));
-			g.draw(timingRectangle);
-			g.setColor(new Color(255f,255f,255f,(timingShowRenderRectangle/(TimingForRunes*2000))));
-			g.fill(timingRectangle);
+			if(typeRunes > 0){
+				if(typeRunes == 1){
+					timingRectangle = new Rectangle(0,0,Stage_Width,Stage_Height);
+					g.setColor(new Color(255f,255f,255f,0f));
+					g.draw(timingRectangle);
+					g.setColor(new Color(255f,255f,255f,(timingShowRenderRectangle/(TimingForRunes*2000))));
+					g.fill(timingRectangle);
+				}
+				timingBar = new Rectangle(1450,860,(timingShowRenderRectangle/(TimingForRunes*5)),20);
+				g.setColor(new Color(0,0,255));
+				g.draw(timingBar);
+				g.fill(timingBar);
+			}
 		}
 	}
 	
@@ -544,15 +612,30 @@ public class TowerDefenseGame extends BasicGame{
 		if(isGameStarted && !isGameOver){
 			releaseMonster();
 			Timer(delta);
-			if(wave >= 1){
+			if(wave == 1){
 				darkstage.setColor((int) 1f, 1f, 1f, changeResolutionBg);
 			}
+			else if(wave >= 2){
+				woodstage.setColor((int) 1f, 1f, 1f, changeResolutionBg);
+			}
+			
 			for (Entity entity : entities) {
 			      entity.update(container, delta);
 			}
+			
 			for(Monster monster : monsterAll){
 			   	   monster.update(container, delta);
 			}
+			for(MonsterDie monsterdie : monsterdies){
+				monsterdie.update(container, delta);
+
+			}
+			for(int i=0;i<monsterdies.size();i++){
+				if(monsterdies.get(i).checkEndTime){
+					monsterdies.remove(i);
+				}
+			}
+			
 			for(Tower tower : tower){
 				tower.update(container, delta);
 			}
@@ -567,6 +650,10 @@ public class TowerDefenseGame extends BasicGame{
 			}
 			setCollideAndDestroy(delta);
 			
+
+			runesHpAddUpdate(delta);
+			
+			
 			//destroy Bullet after monster death all
 			if(monsterAll.size() == 0){
 				for(int i=0;i<tower.size();i++){
@@ -578,11 +665,31 @@ public class TowerDefenseGame extends BasicGame{
 		}
 	}
 	
+	
+	public void runesHpAddUpdate(int delta){
+		if(typeRunes == 3){
+			Random random = new Random();
+			HpGame += 5+random.nextInt(15);
+			if(HpGame > HpGameMax){
+				HpGame = HpGameMax;
+			}
+			typeRunes = 0;
+		}
+		if(HpGame > 100){
+			timeToDecreaseHpOver -= delta;
+			if(timeToDecreaseHpOver <= 0)
+			{
+				timeToDecreaseHpOver  = timeDecreaseHpOver;
+				HpGame--;
+			}
+		}
+	}
+	
 	public static void main(String[] args) {
 		try {
 		      TowerDefenseGame game = new TowerDefenseGame("TowerDefenseGame");
 		      AppGameContainer appgc = new AppGameContainer(game);
-		      appgc.setDisplayMode(Screen_Width, Screen_Height, true);
+		      appgc.setDisplayMode(Screen_Width, Screen_Height, false);
 		      appgc.start();
 		    } catch (SlickException e) {
 		      e.printStackTrace();

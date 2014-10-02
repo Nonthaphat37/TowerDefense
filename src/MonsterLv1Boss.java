@@ -1,3 +1,4 @@
+
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -12,17 +13,16 @@ public class MonsterLv1Boss extends Monster {
 	private SpriteSheet Monster2;
 	private Animation MonsterAnimation1;
 	private Animation MonsterAnimation2;
-	private int attack = 10;				//set attck Hp
+	private int attack = 4;				//set attck Hp
 	private float v = (float)0.5;				//set velocity
 	
 	private SpriteSheet MonsterSkill;
 	private Animation MonsterSkillAnimation;
 	private int timeSkill = 0;
 	private boolean skillShow = false;
-	private int hpMonsterthis = 2500;
-	
+	private int hpMonsterthis = 2000000;
 	private boolean checkrunes = true;
-	
+
 
 	public MonsterLv1Boss(float x, float y) throws SlickException {
 		super(x, y);
@@ -36,48 +36,49 @@ public class MonsterLv1Boss extends Monster {
 		attackCastle = attack;		//set attack Hp
 		velocity = v;
 		hpMonster = hpMonsterthis;
+		CalWidthHpBar = hpMonster/50;
+		typeMonster = "MonsterLv1Boss";
 	}
 	
 	@Override
-	public void render(Graphics g) {	
-		if(TowerDefenseGame.typeRunes != 1 && !checkrunes){
-			MonsterAnimation1 = new Animation(Monster1, 100);
-			MonsterAnimation2 = new Animation(Monster2, 100);
-			checkrunes = true;
-		}
-		else if(TowerDefenseGame.typeRunes == 1 && checkrunes){
-			MonsterAnimation1 = new Animation(Monster1, 100000);
-			MonsterAnimation2 = new Animation(Monster2, 100000);
-			checkrunes = false;
-		}
+	public void render(Graphics g) {
+			if(TowerDefenseGame.typeRunes != 1 && !checkrunes){
+				MonsterAnimation1 = new Animation(Monster1, 100);
+				MonsterAnimation2 = new Animation(Monster2, 100);
+				checkrunes = true;
+			}
+			else if(TowerDefenseGame.typeRunes == 1 && checkrunes){
+				MonsterAnimation1 = new Animation(Monster1, 100000);
+				MonsterAnimation2 = new Animation(Monster2, 100000);
+				checkrunes = false;
+			}
 		
-		
-		if(checkAnimation == 0 || checkAnimation == 1){
-			MonsterAnimation1.draw(x,y);
-		}
-		else{
-			MonsterAnimation2.draw(x,y);
-		}
-		if(skillShow){
-			MonsterSkillAnimation.draw(x+4,y-60);
-		}
-		HpBar(g);
+			if(checkAnimation == 0 || checkAnimation == 1){
+				MonsterAnimation1.draw(x,y);
+			}
+			else{
+				MonsterAnimation2.draw(x,y);
+			}
+			if(skillShow){
+				MonsterSkillAnimation.draw(x+4,y-60);
+			}
+			HpBar(g);
 	}
 	
 	
 	@Override
 	public void update(GameContainer container, int delta) {
-		updateposition();
-		skill(delta);
+			updateposition();
+			skill(delta);
 	}
 	
 	
 	public void skill(int delta){
-		if(hpMonster <= 1000){
+		if(hpMonster <= 500){
 			skillShow = true;
 			timeSkill += delta;
 			if(timeSkill >= 1000){
-				v = (float) 1.5;
+				v = (float) 1.2;
 				velocity = v;
 			}
 			else{

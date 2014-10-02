@@ -4,15 +4,13 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 
-public class RuneTiming extends Rune {
-
-	
+public class RuneAttack extends Rune {
 	
 
-	public RuneTiming(float x, float y) throws SlickException {
+	public RuneAttack(float x, float y) throws SlickException {
 		super(x, y);
-		runes = new Image("res/runeTiming.png");
-		typeRune = 1;
+		runes = new Image("res/runeAttack.png");
+		typeRune = 2;
 	}
 	
 	@Override

@@ -27,6 +27,7 @@ public class TowerFire extends Tower {
 	@Override
 	public void render(Graphics g) {
 		towerFire.draw(x,y);
+		RenderRuneAttack();
 	}
 	
 	@Override

@@ -1,6 +1,8 @@
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 
 
 public class Tower implements Entity{
@@ -37,14 +39,25 @@ public class Tower implements Entity{
 	 private int speedSecTower = 1000;
 	 private int calSpeed = 0;
 	 
-	 public Tower(float x, float y){
+	 //getRunes
+	 public int BonusAttack = 1;
+	 private Image RuneAttack;
+	 
+	 public Tower(float x, float y) throws SlickException{
 			this.x = x;
 			this.y = y;
+			RuneAttack = new Image("res/getRuneAttack.png");
 	    }
 	 
 	 
 	 public int getAttack(){
-		 return attackTower;
+		 if(TowerDefenseGame.typeRunes == 2){
+			 BonusAttack = 2;
+		 }
+		 else{
+			 BonusAttack = 1;
+		 }
+		 return attackTower*BonusAttack;
 	 }
 	 
 	 public int getElement(){
@@ -90,17 +103,21 @@ public class Tower implements Entity{
 		 else if(rememberNumMon > numMon){
 			 rememberNumMon = numMon;
 		 }
-		 
     }
-     
     
+     protected void RenderRuneAttack(){
+    	 if(TowerDefenseGame.typeRunes == 2){
+        	 RuneAttack.draw(x+36,y-12);
+    	 }
+     }
+     
     private void CalSpeedTower(int delta){
     	calSpeed+=delta;
     	speedrealTower = Math.abs(speedTower-speedSecTower);
     	if(calSpeed>=speedrealTower){
     		calSpeed = 0;
     		TowerDefenseGame.setupBullet();
-			 TowerDefenseGame.releaseBullet(numTower);
+			TowerDefenseGame.releaseBullet(numTower);
 			
     	}
     }

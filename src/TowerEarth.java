@@ -27,6 +27,7 @@ public class TowerEarth extends Tower {
 	@Override
 	public void render(Graphics g) {
 		towerEarth.draw(x,y);
+		RenderRuneAttack();
 	}
 	
 	@Override

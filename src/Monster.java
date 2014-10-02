@@ -1,3 +1,4 @@
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -28,6 +29,9 @@ public class Monster implements Entity{
 	protected int element = 0;
 	
 	private Rectangle hpBar;
+	protected int CalWidthHpBar;
+	
+	protected String typeMonster;
 
     public Monster(float x, float y){
 		this.x = x;
@@ -188,14 +192,14 @@ public class Monster implements Entity{
 				    }	
 				}
 			}
-		}
-		if(errorFinish){
-			Finish(checkfieldY);
+			if(errorFinish){
+				Finish(checkfieldY);
+			}
 		}
 	}
 	
 	protected void HpBar(Graphics g){
-		hpBar = new Rectangle(x+14,y+3,(float)(hpMonster/10),4);
+		hpBar = new Rectangle(x+14,y+3,(float)(hpMonster/CalWidthHpBar),4);
 		g.setColor(new Color(0,0,0));
 		g.draw(hpBar);
 		g.setColor(new Color(200,0,0));

@@ -1,3 +1,4 @@
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -24,7 +25,8 @@ public class MonsterLv1 extends Monster {
 		attackCastle = attack;		//set attack Hp
 		velocity = v;
 		hpMonster = hpMonsterthis;
-
+		CalWidthHpBar = hpMonster/50;
+		typeMonster = "MonsterLv1";
 	}
 	
 	@Override
@@ -45,7 +47,6 @@ public class MonsterLv1 extends Monster {
 		else if(checkAnimation == 2){
 			Monster.setRotation(270);
 		}
-		
 	}
 	
 }

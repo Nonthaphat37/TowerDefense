@@ -38,6 +38,7 @@ public class fieldBuild implements Entity{
 		   ,{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}			//19
 	};
 	
+	
 	public static int checkCol_mouseXRectX;
 	public static int checkCol_mouseXRectY;
 	

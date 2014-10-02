@@ -29,6 +29,7 @@ public class TowerDark extends Tower {
 	@Override
 	public void render(Graphics g) {
 		towerDark.draw(x,y);
+		RenderRuneAttack();
 	}
 	
 	@Override

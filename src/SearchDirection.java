@@ -18,7 +18,6 @@ public class SearchDirection {
 		calculatorDistance(x1, x2, y1, y2);
 		dircos = (float)Math.acos(x/distance);
 			vx = (float) (ovx * Math.cos(dircos));
-
 		return vx;
 	}
 	
