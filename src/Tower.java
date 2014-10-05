@@ -30,13 +30,22 @@ public class Tower implements Entity{
 	 
 	 
 	 //upgrate
-	 protected int rangeTower = 200;
-	 protected  int speedTower = 50;
+	 protected int rangeTower = 50;
+	 protected  int speedTower = 0;
 	 protected int speedrealTower;
-	 protected int attackTower = 10;
+	 protected int attackTower = 0;
+	 protected int goldRate = 10;
+	 protected int goldTimeRate = 0;
 	 protected int element = 0;
 	 
-	 private int speedSecTower = 1000;
+	 public int upgrateAttack = 0;
+	 public int upgrateSpeed = 0;
+	 public int upgrateRange = 0;
+	 
+	 public int upgrateGoldRate = 0;
+	 public int upgrateGoldTimeRate = 0;
+	 
+	 private int speedSecTower = 2500;
 	 private int calSpeed = 0;
 	 
 	 //getRunes
@@ -49,6 +58,24 @@ public class Tower implements Entity{
 			RuneAttack = new Image("res/getRuneAttack.png");
 	    }
 	 
+	 public int upgratePrice(String checkUpgrate){
+		 if(checkUpgrate == "Attack"){
+			 return (int) (10+20*upgrateAttack + Math.pow(2, upgrateAttack ));
+		 }
+		 else if(checkUpgrate == "Speed"){
+			 return (int) (10+20*upgrateSpeed + Math.pow(2, upgrateSpeed ));
+		 }
+		 else if(checkUpgrate == "Range"){
+			 return (int) (10+10*upgrateRange + Math.pow(1.4, upgrateSpeed));
+		 } 
+		 else if(checkUpgrate == "GoldRate"){
+			 return 100+150*upgrateGoldRate;
+		 }
+		 else if(checkUpgrate == "GoldTimeRate"){
+			 return 70+120*upgrateGoldTimeRate;
+		 }
+		 return 0;
+	 }
 	 
 	 public int getAttack(){
 		 if(TowerDefenseGame.typeRunes == 2){
@@ -113,7 +140,7 @@ public class Tower implements Entity{
      
     private void CalSpeedTower(int delta){
     	calSpeed+=delta;
-    	speedrealTower = Math.abs(speedTower-speedSecTower);
+    	speedrealTower = Math.abs(speedTower*35-speedSecTower);
     	if(calSpeed>=speedrealTower){
     		calSpeed = 0;
     		TowerDefenseGame.setupBullet();
@@ -133,7 +160,6 @@ public class Tower implements Entity{
 
 	@Override
 	public void update(GameContainer container, int delta) {
-		
 	}
 	
 }

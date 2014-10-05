@@ -13,21 +13,20 @@ public class MonsterLv1Boss extends Monster {
 	private SpriteSheet Monster2;
 	private Animation MonsterAnimation1;
 	private Animation MonsterAnimation2;
-	private int attack = 4;				//set attck Hp
-	private float v = (float)0.5;				//set velocity
+	private int attack = 15;				//set attck Hp
+	private float v = (float)3;				//set velocity
 	
 	private SpriteSheet MonsterSkill;
 	private Animation MonsterSkillAnimation;
 	private int timeSkill = 0;
 	private boolean skillShow = false;
-	private int hpMonsterthis = 200000;
-	private boolean checkrunes = true;
+	private int hpMonsterthis = 3500;
 
 
 	public MonsterLv1Boss(float x, float y) throws SlickException {
 		super(x, y);
-		Monster1 = new SpriteSheet("res/MonsterLv1_1.png", 78, 78);
-		Monster2 = new SpriteSheet("res/MonsterLv1_2.png", 78, 78);
+		Monster1 = new SpriteSheet("res/Monsters/MonsterLv1Boss/MonsterLv1Boss_1.png", 78, 78);
+		Monster2 = new SpriteSheet("res/Monsters/MonsterLv1Boss/MonsterLv1Boss_2.png", 78, 78);
 		MonsterSkill = new SpriteSheet("res/MonsterLv1BossSkill.png", 70, 60);
 		MonsterAnimation1 = new Animation(Monster1, 100);
 		MonsterAnimation2 = new Animation(Monster2, 100);
@@ -63,8 +62,8 @@ public class MonsterLv1Boss extends Monster {
 				MonsterSkillAnimation.draw(x+4,y-60);
 			}
 			HpBar(g);
+			HpBarForBoss(g);
 	}
-	
 	
 	@Override
 	public void update(GameContainer container, int delta) {
@@ -74,11 +73,11 @@ public class MonsterLv1Boss extends Monster {
 	
 	
 	public void skill(int delta){
-		if(hpMonster <= 50000){
+		if(hpMonster <= 1000){
 			skillShow = true;
 			timeSkill += delta;
 			if(timeSkill >= 1000){
-				v = (float) 2;
+				v = (float) 5.5;
 				velocity = v;
 			}
 			else{
@@ -86,6 +85,5 @@ public class MonsterLv1Boss extends Monster {
 				velocity = v;
 			}
 		}
-		
 	}
 }

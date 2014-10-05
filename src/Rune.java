@@ -9,7 +9,7 @@ public class Rune implements Entity{
 	
 	protected float x;
 	protected float y;
-	protected float velocity = (float)0.2;
+	protected float velocity = (float)2;
 	private Random random;
 	protected float LengthY;
 	protected int typeRune = 0;       //1=timing 2=attack 3=AddHpCastle

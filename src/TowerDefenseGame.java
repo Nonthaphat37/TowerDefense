@@ -33,6 +33,7 @@ public class TowerDefenseGame extends BasicGame{
 	
 	public int currentWave = 2;
 	public static int wave = 0;
+	private int wavesmall = 1;
 	private boolean checkWave = true;  // check to release monster in next wave
 	
 	 private LinkedList<Entity> entities;
@@ -48,8 +49,8 @@ public class TowerDefenseGame extends BasicGame{
 	 public static float monster_startY = 156;
 	 private boolean monster_checkTotal = false;
 	 private static int number_monster = 0;
-	 private static int[] max_monsterwave =  new int[]{10,1};
-	 private static float timerdelay_monster = (float) 0.5;
+	 private static int[] max_monsterwave =  new int[]{20,2,1,20,3,4};
+	 private static float[] timerdelay_monster = new float[] {1,3,1};
 	 private static float timer_monster = 0;
 	 private static ArrayList<Monster> monsterAll = new ArrayList<Monster>();
 	 private ArrayList<MonsterDie> monsterdies = new ArrayList<MonsterDie>();
@@ -81,7 +82,10 @@ public class TowerDefenseGame extends BasicGame{
 	private static ArrayList<Tower> tower = new ArrayList<Tower>();
 	public static boolean checkMouseClickCell = false;
 	public static int checkClicktower = -1;
-	
+	private Image ButtonSellTower;
+	private int checkClicktowerforSell;
+	private static int checkClickTowerRectXForSell;
+	private static int checkClickTowerRectYForSell;
 	
 	//Mouse
 	private static float mouseError = 21;
@@ -107,12 +111,16 @@ public class TowerDefenseGame extends BasicGame{
 	private Image plus3;
 	private Upgrate upgrate;
 	
+	private int UpgrateMax = 10;
+	
 	//GoldBuild and Goldsystem
-	private GoldBuilding goldbuilding;
-
+	public static int CooldownCountGoldBuilding = 0;
+	private int CooldownGoldBuilding = 10000;
+	public static boolean checkGoldBuildingBuild = false;
+	
 	//GoldSystem
-	public static int Gold = 0;
-	public static int[] priceTower = {10,20,200,10,0};
+	public static int Gold = 120;
+	public static int[] priceTower = {10,30,30,30,100};
 	
 	//Rune System
 	private static ArrayList<Rune> runes = new ArrayList<Rune>();
@@ -152,10 +160,10 @@ public class TowerDefenseGame extends BasicGame{
 	
 	public void setBackgroundRender(Graphics g){
 		g.setColor(new Color(0, 0, 0));
-		if(wave == 1){
+		if(wave == 0 || wave == 1){
 			darkstage.draw(Stage_x, Stage_y);
 		}
-		else if(wave >= 2){
+		else if(wave == 2){
 			woodstage.draw(Stage_x, Stage_y);
 		}
 		Shopbackground.draw(30, Stage_Height+10);
@@ -186,37 +194,86 @@ public class TowerDefenseGame extends BasicGame{
 				if(time > 500){
 					time = 0;
 					timer += 0.5;
-					ChangeResolutionBg();
-					if(currentWave != 0 && Math.ceil(timer) - timer != 0.5){
-						checkWave = true;
-						currentWave--;
-						if(currentWave == 7){
+					if(timer >= 16 && monsterAll.size() != 0){
 							releaseRune();
+							timer = 0;
+					}
+					ChangeResolutionBg();
+					if(wave == 0){
+						calTimeMonster("wave");
+					}
+					else if(wave == 1){
+						if(wavesmall <= 3){
+							calTimeMonster("wavesmall");
+							calTimeRune();
+						}
+						else if(wavesmall == 4 && monsterAll.size() == 0){
+							calTimeMonster("wave");
+							calTimeRune();
 						}
 					}
-					if(checkWave && currentWave == 0){
-						wave++;
-						number_monster = 0;          //release monster wave2
-						monster_checkTotal = false;  //release monster wave2
-						currentWave = 10;
-					    checkWave = false;
-					}
-					
-					if(checkReleaseRunes){
-						timingCountDestroyRunes -= 0.5;
-						if(timingCountDestroyRunes <= 0){
-							for(int i=0;i<runes.size();i++){
-								runes.remove(i);
-							}
+					else if(wave == 2){
+						if(wavesmall <= 3){
+							calTimeMonster("wavesmall");
+							calTimeRune();
 						}
-					}
-					
-					if(runes.size() == 0){
-						checkReleaseRunes = false;
-						timingCountDestroyRunes = timingForDestroyRunes;
+						else if(wavesmall == 4 && monsterAll.size() == 0){
+							calTimeMonster("wave");
+							calTimeRune();
+						}
 					}
 				}
 				timingRunes();
+				TimingCountDownGoldBuilding(delta);
+	}
+	
+	
+	public void calTimeRune(){
+		if(checkReleaseRunes){
+			timingCountDestroyRunes -= 0.5;
+			if(timingCountDestroyRunes <= 0){
+				for(int i=0;i<runes.size();i++){
+					runes.remove(i);
+				}
+			}
+		}
+		
+		if(runes.size() == 0){
+			checkReleaseRunes = false;
+			timingCountDestroyRunes = timingForDestroyRunes;
+		}
+	}
+	
+	public void calTimeMonster(String checkw) throws SlickException{
+		if(currentWave != 0 && Math.ceil(timer) - timer != 0.5){
+			checkWave = true;
+			currentWave--;
+			
+		}
+		if(checkWave && currentWave == 0){
+			if(checkw == "wave"){
+				wave++;
+				wavesmall = 1;
+			}
+			else{
+				wavesmall++;
+			}
+			number_monster = 0;          //release monster next wave
+			monster_checkTotal = false;  //release monster next wave
+			currentWave = 20;
+		    checkWave = false;
+		}
+	}
+	
+	
+	public void TimingCountDownGoldBuilding(int delta){
+			if(checkGoldBuildingBuild){
+				CooldownCountGoldBuilding -= delta;
+				if(CooldownCountGoldBuilding <= 0){
+					checkGoldBuildingBuild = false;
+					CooldownCountGoldBuilding = 0;
+				}
+			}
 	}
 
 	//Rune
@@ -252,26 +309,74 @@ public class TowerDefenseGame extends BasicGame{
 	
 	//Monster
 	public void releaseMonster() throws SlickException{
-		if(wave == 1 && number_monster < max_monsterwave[0]){
-			if(!monster_checkTotal){
-				monsterAll.add(new MonsterLv1(monster_startX, monster_startY));
-				monster_checkTotal = true;			// check monster release
-				timer_monster = timer+timerdelay_monster;
-				number_monster++;
+		if(wave == 1){
+			if(wavesmall == 1 && number_monster < max_monsterwave[(wave-1)*3+(wavesmall-1)]){
+				if(!monster_checkTotal){
+					monsterAll.add(new MonsterLv1(monster_startX, monster_startY));
+					monster_checkTotal = true;			// check monster release
+					timer_monster = timer+timerdelay_monster[wavesmall-1];
+					number_monster++;
+				}
+				else if(timer_monster == timer){
+					monster_checkTotal = false;			// check monster release
+				}
 			}
-			else if(timer_monster == timer){
-				monster_checkTotal = false;			// check monster release
+			else if(wavesmall == 2 && number_monster < max_monsterwave[(wave-1)*3+(wavesmall-1)]){
+				if(!monster_checkTotal){
+					monsterAll.add(new MonsterLv1MiniBoss(monster_startX, monster_startY));
+					monster_checkTotal = true;			// check monster release
+					timer_monster = timer+timerdelay_monster[wavesmall-1];
+					number_monster++;
+				}
+				else if(timer_monster == timer){
+					monster_checkTotal = false;			// check monster release
+				}
+			}
+			else if(wavesmall == 3 && number_monster < max_monsterwave[(wave-1)*3+(wavesmall-1)]){
+				if(!monster_checkTotal){
+					monsterAll.add(new MonsterLv1Boss(monster_startX, monster_startY));
+					monster_checkTotal = true;			// check monster release
+					timer_monster = timer+timerdelay_monster[wavesmall-1];
+					number_monster++;
+				}
+				else if(timer_monster == timer){
+					monster_checkTotal = false;			// check monster release
+				}
 			}
 		}
-		else if(wave == 2 && number_monster < max_monsterwave[1]){
-			if(!monster_checkTotal){
-				monsterAll.add(new MonsterLv1Boss(monster_startX, monster_startY));
-				monster_checkTotal = true;			// check monster release
-				timer_monster = timer+timerdelay_monster;
-				number_monster++;
+		else if(wave == 2){
+			if(wavesmall == 1 && number_monster < max_monsterwave[(wave-1)*3+(wavesmall-1)]){
+				if(!monster_checkTotal){
+					monsterAll.add(new MonsterLv2(monster_startX, monster_startY));
+					monster_checkTotal = true;			// check monster release
+					timer_monster = timer+timerdelay_monster[wavesmall-1];
+					number_monster++;
+				}
+				else if(timer_monster == timer){
+					monster_checkTotal = false;			// check monster release
+				}
 			}
-			else if(timer_monster == timer){
-				monster_checkTotal = false;			// check monster release
+			else if(wavesmall == 2 && number_monster < max_monsterwave[(wave-1)*3+(wavesmall-1)]){
+				if(!monster_checkTotal){
+					monsterAll.add(new MonsterLv1MiniBoss(monster_startX, monster_startY));
+					monster_checkTotal = true;			// check monster release
+					timer_monster = timer+timerdelay_monster[wavesmall-1];
+					number_monster++;
+				}
+				else if(timer_monster == timer){
+					monster_checkTotal = false;			// check monster release
+				}
+			}
+			else if(wavesmall == 3 && number_monster < max_monsterwave[(wave-1)*3+(wavesmall-1)]){
+				if(!monster_checkTotal){
+					monsterAll.add(new MonsterLv1Boss(monster_startX, monster_startY));
+					monster_checkTotal = true;			// check monster release
+					timer_monster = timer+timerdelay_monster[wavesmall-1];
+					number_monster++;
+				}
+				else if(timer_monster == timer){
+					monster_checkTotal = false;			// check monster release
+				}
 			}
 		}
 	}
@@ -285,7 +390,6 @@ public class TowerDefenseGame extends BasicGame{
 	}
 	
 	public static void releaseBullet(int numTower){
-		//System.out.println(numTower);
 		if(tower.get(numTower).getElement() == 0){
 			bullet.get(numTower).add(new BulletDark(tower.get(numTower).x+39,tower.get(numTower).y+39));
 		}
@@ -337,91 +441,86 @@ public class TowerDefenseGame extends BasicGame{
 		if(!checkBuild){
 			checkClicktower = Store.checkClickTower(x, y);
 		}
-		if(Store.checkMouseTower(x,y,checkClicktower) && !checkMouseClickCell && button == 0 && Gold >= priceTower[checkClicktower]){		//click tower in shop
-			checkMouseClickCell = true;
-			checkBuild = true;
-			
+		if(checkClicktower == 4 && checkGoldBuildingBuild){
 		}
-		else if(checkMouseClickCell && button == 0 &&
-				fieldBuild.checkCol_mouseXRectY-1 != -1 &&
-				fieldBuild.checkCol_mouseXRectX != -1 &&
-				fieldBuild.checkCol_mouseXRectY != -1 &&
-				fieldBuild.checkCol_mouseXRectX+1 != -1){
-			if(fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX] == 0 &&
-			   fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX] == 0 &&
-			   fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX+1] == 0 &&
-			   fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX+1] == 0){
-						
-						//add tower///////////////////////////////////////////////////////////
-						
-						try {
-							if(checkClicktower == 0 && Gold >= priceTower[0]){
-								tower.add(new TowerDark(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
-									(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
-								Gold -= priceTower[0];
+		else{
+			if(Store.checkMouseTower(x,y,checkClicktower) && !checkMouseClickCell && button == 0 && Gold >= priceTower[checkClicktower]){		//click tower in shop
+				checkMouseClickCell = true;
+				checkBuild = true;
+				
+			}
+			else if(checkMouseClickCell && button == 0 &&
+					fieldBuild.checkCol_mouseXRectY-1 != -1 &&
+					fieldBuild.checkCol_mouseXRectX != -1 &&
+					fieldBuild.checkCol_mouseXRectY != -1 &&
+					fieldBuild.checkCol_mouseXRectX+1 != -1
+					&&fieldBuild.checkCol_mouseXRectX+1 != 40){
+				if(fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX] == 0 &&
+				   fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX] == 0 &&
+				   fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX+1] == 0 &&
+				   fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX+1] == 0){
+							
+							//add tower///////////////////////////////////////////////////////////
+							
+							try {
+								if(checkClicktower == 0 && Gold >= priceTower[0]){
+									tower.add(new TowerDark(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
+										(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
+									Gold -= priceTower[0];
+								}
+								else if(checkClicktower == 1 && Gold >= priceTower[1]){
+									tower.add(new TowerWater(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
+											(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
+									Gold -= priceTower[1];
+								}
+								else if(checkClicktower == 2 && Gold >= priceTower[2]){
+									tower.add(new TowerFire(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
+											(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
+									Gold -= priceTower[2];
+								}
+								else if(checkClicktower == 3 && Gold >= priceTower[3]){
+									tower.add(new TowerEarth(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
+											(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
+									Gold -= priceTower[3];
+								}
+								else if(checkClicktower == 4 && Gold >= priceTower[4]){
+									tower.add(new GoldBuilding(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
+											(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
+									Gold -= priceTower[4];
+									CooldownCountGoldBuilding = CooldownGoldBuilding;
+									checkGoldBuildingBuild = true;
+								}
+								checkBuild = false;   //click For build success
+								 for(int i=0;i<tower.size();i++){
+									if(i==tower.size()-1){
+										tower.get(i).getNumTower(tower.size()-1);
+									}
+								}
+								checkClicktower = -1;
+							}catch (SlickException e) {
+								e.printStackTrace();
 							}
-							else if(checkClicktower == 1 && Gold >= priceTower[1]){
-								tower.add(new TowerWater(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
-										(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
-								Gold -= priceTower[1];
-								}
-							else if(checkClicktower == 2 && Gold >= priceTower[2]){
-								tower.add(new TowerFire(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
-										(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
-								Gold -= priceTower[2];
-								}
-							else if(checkClicktower == 3 && Gold >= priceTower[3]){
-								tower.add(new TowerEarth(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
-										(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
-								Gold -= priceTower[3];
-								}
-							else if(checkClicktower == 4 && Gold >= priceTower[4]){
-								entities.add(new GoldBuilding(fieldBuild.checkCol_mouseXRectX * fieldBuild.sizeRect,
-										(fieldBuild.checkCol_mouseXRectY-1)* fieldBuild.sizeRect));
-								Gold -= priceTower[4];
-								}
-							checkBuild = false;   //click For build success
-									 for(int i=0;i<tower.size();i++){
-										 
-					
-										
-										 if(i==tower.size()-1){
-											 tower.get(i).getNumTower(tower.size()-1);
-										 }
-										 
-										 
-										 //// range tower
-										 
-										
-										 
-										 //setup bullet
-									 }
-									 checkClicktower = -1;
-							}	 catch (SlickException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							
+							//give red field
+							fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX] = 99;
+							fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX] = 99;
+							fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX+1] = 99;
+							fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX+1] = 99;
+							//remove terrain and click
+							fieldBuild.checkCol_mouseXRectX = -1;
+							fieldBuild.checkCol_mouseXRectY = -1;
+							checkMouseClickCell = false;
 						}
-						
-						
-						//give red field
-						fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX] = 99;
-						fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX] = 99;
-						fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX+1] = 99;
-						fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX+1] = 99;
-						
-						//remove terrain and click
-						fieldBuild.checkCol_mouseXRectX = -1;
-						fieldBuild.checkCol_mouseXRectY = -1;
-						checkMouseClickCell = false;
 					}
+			else if(checkMouseClickCell && button == 1){
+				//remove buy
+					checkBuild = false;
+					checkMouseClickCell = false;
+					fieldBuild.checkCol_mouseXRectX = -1;
+					fieldBuild.checkCol_mouseXRectY = -1;
+			}
 		}
-		else if(checkMouseClickCell && button == 1){
-			//remove buy
-				checkBuild = false;
-				checkMouseClickCell = false;
-				fieldBuild.checkCol_mouseXRectX = -1;
-				fieldBuild.checkCol_mouseXRectY = -1;
-		}
+		
 	}
 	
 	
@@ -437,6 +536,11 @@ public class TowerDefenseGame extends BasicGame{
 						checktowerClicktoCloseUpgrage = true;
 					}
 					checktowerClick = i;		
+					if(checktowerClick != -1){
+						checkClicktowerforSell = checktowerClick;
+						checkClickTowerRectXForSell = fieldBuild.checkTowerTerrainX(tower.get(checktowerClick).x);
+						checkClickTowerRectYForSell = fieldBuild.checkTowerTerrainY(tower.get(checktowerClick).y);
+					}
 				}
 			}
 		}
@@ -448,22 +552,58 @@ public class TowerDefenseGame extends BasicGame{
 				checktowerClicktoCloseUpgrage = false;
 			}
 		}
-		if(checkMouseClicktower && mouseX > 1730 && mouseX<1730+40 && mouseY > 85 && mouseY < 85+40){
+		if(checkMouseClicktower && mouseX > 1730 && mouseX<1730+40 && mouseY > 85 && mouseY < 85+40
+				&& tower.get(checktowerClick).upgrateAttack < UpgrateMax 
+				&& Gold >= tower.get(checktowerClick).upgratePrice("Attack")
+				&& tower.get(checktowerClick).getElement() != 99){
 			upgrate = new Upgrate(tower.get(checktowerClick));
-			tower.get(checktowerClick).attackTower = upgrate.upgrateAttack();
+			tower.get(checktowerClick).attackTower += upgrate.upgrateAttack(tower.get(checktowerClick).upgrateAttack,
+																			tower.get(checktowerClick).attackTower);
+			Gold -= tower.get(checktowerClick).upgratePrice("Attack");
+			tower.get(checktowerClick).upgrateAttack++;
 		}
-		else if(checkMouseClicktower && mouseX > 1730 && mouseX<1730+40 && mouseY > 135 && mouseY < 135+40){
+		else if(checkMouseClicktower && mouseX > 1730 && mouseX<1730+40 && mouseY > 135 && mouseY < 135+40
+				&& tower.get(checktowerClick).upgrateSpeed < UpgrateMax
+				&& Gold >= tower.get(checktowerClick).upgratePrice("Speed")
+				&& tower.get(checktowerClick).getElement() != 99){
 			upgrate = new Upgrate(tower.get(checktowerClick));
-			tower.get(checktowerClick).speedTower = upgrate.upgrateSpeed();
+			tower.get(checktowerClick).speedTower += upgrate.upgrateSpeed(tower.get(checktowerClick).upgrateSpeed,
+																		  tower.get(checktowerClick).speedTower);
+			Gold -= tower.get(checktowerClick).upgratePrice("Speed");
+			tower.get(checktowerClick).upgrateSpeed++;
 		}
-		else if(checkMouseClicktower && mouseX > 1730 && mouseX<1730+40 && mouseY > 185 && mouseY < 185+40){
+		else if(checkMouseClicktower && mouseX > 1730 && mouseX<1730+40 && mouseY > 185 && mouseY < 185+40
+				&& tower.get(checktowerClick).upgrateRange < UpgrateMax
+				&& Gold >= tower.get(checktowerClick).upgratePrice("Range")
+				&& tower.get(checktowerClick).getElement() != 99){
 			upgrate = new Upgrate(tower.get(checktowerClick));
-			tower.get(checktowerClick).rangeTower = upgrate.upgrateRange();
+			tower.get(checktowerClick).rangeTower += upgrate.upgrateRange(tower.get(checktowerClick).upgrateRange);
 			Rangetowershop1 = new Circle(tower.get(checktowerClick).x+39,tower.get(checktowerClick).y+39,tower.get(checktowerClick).rangeTower);
+			Gold -= tower.get(checktowerClick).upgratePrice("Range");
+			tower.get(checktowerClick).upgrateRange++;
 		}
-	
+		
+		//
+		else if(checkMouseClicktower && mouseX > 1730 && mouseX<1730+40 && mouseY > 85 && mouseY < 85+40
+				&& tower.get(checktowerClick).upgrateGoldRate < UpgrateMax
+				&& Gold >= tower.get(checktowerClick).upgratePrice("GoldRate")
+				&& tower.get(checktowerClick).getElement() == 99){
+
+			upgrate = new Upgrate(tower.get(checktowerClick));
+			tower.get(checktowerClick).goldRate += upgrate.upgrateGoldRate();
+			Gold -= tower.get(checktowerClick).upgratePrice("GoldRate");
+			tower.get(checktowerClick).upgrateGoldRate++;
+		}
+		else if(checkMouseClicktower && mouseX > 1730 && mouseX<1730+40 && mouseY > 135 && mouseY < 135+40
+				&& tower.get(checktowerClick).upgrateGoldTimeRate < UpgrateMax
+				&& Gold >= tower.get(checktowerClick).upgratePrice("GoldTimeRate")
+				&& tower.get(checktowerClick).getElement() == 99){
+			upgrate = new Upgrate(tower.get(checktowerClick));
+			tower.get(checktowerClick).goldTimeRate += upgrate.upgrateGoldTimeRate();
+			Gold -= tower.get(checktowerClick).upgratePrice("GoldTimeRate");
+			tower.get(checktowerClick).upgrateGoldTimeRate++;
+		}
 	}
-	
 	
 	
 	//Collide Bullet and Monster to Destroy bullet and monster
@@ -499,30 +639,126 @@ public class TowerDefenseGame extends BasicGame{
 		}
 	}
 	
-	public void drawUpgrate(Graphics g){
+	public void drawUpgrate(Graphics g) throws SlickException{
 		g.setColor(new Color(1f, 1f, 1f, 0f));
 		g.draw(Rangetowershop1);
 		g.setColor(new Color(1f, 1f, 1f, 0.2f));
 		g.fill(Rangetowershop1);
-		
-		if(typeRunes == 2){
-			g.setColor(new Color(0, 255, 150));
-			g.drawString("(+ " + tower.get(checktowerClick).attackTower + ")", 1780, 100);
-			g.setColor(new Color(0, 0, 0));
-			g.drawString("Attack   " + tower.get(checktowerClick).attackTower*2, 1600, 100);
+		if(tower.get(checktowerClick).element != 99){
+			if(typeRunes == 2){
+				g.setColor(new Color(0, 255, 150));
+				g.drawString("(+" + tower.get(checktowerClick).attackTower + ")", 1850, 100);
+				g.setColor(new Color(0, 0, 0));
+				g.drawString("Attack   " + tower.get(checktowerClick).attackTower*2, 1600, 100);
+			}
+			else{
+				g.setColor(new Color(0, 0, 0));
+				g.drawString("Attack   " + tower.get(checktowerClick).attackTower, 1600, 100);
+			}
+			
+			g.drawString("Speed   " + tower.get(checktowerClick).speedTower, 1600, 150);
+			g.drawString("Range   " + tower.get(checktowerClick).rangeTower, 1600, 200);
+			g.drawString("Element   " + tower.get(checktowerClick).element, 1600, 250);
+			
+			g.setColor(new Color(255,255 - (tower.get(checktowerClick).upgrateAttack)*14,30));
+			g.drawString("(" + tower.get(checktowerClick).upgrateAttack + ")", 1780, 100);
+			g.setColor(new Color(255,255 - (tower.get(checktowerClick).upgrateSpeed)*14,30));
+			g.drawString("(" + tower.get(checktowerClick).upgrateSpeed + ")", 1780, 150);
+			g.setColor(new Color(255,255 - (tower.get(checktowerClick).upgrateRange)*14,30));
+			g.drawString("(" + tower.get(checktowerClick).upgrateRange + ")", 1780, 200);
+			
+			
+			if(tower.get(checktowerClick).upgrateAttack == UpgrateMax){
+				plus1.setAlpha(0.6f);
+			}
+			else{
+				g.setColor(new Color(255,255,255));
+				g.drawString("$" + tower.get(checktowerClick).upgratePrice("Attack"), 1810, 100);
+			}
+			if(tower.get(checktowerClick).upgrateSpeed == UpgrateMax){
+				plus2.setAlpha(0.6f);
+			}
+			else{
+				g.setColor(new Color(255,255,255));
+				g.drawString("$" + tower.get(checktowerClick).upgratePrice("Speed"), 1810, 150);
+			}
+			if(tower.get(checktowerClick).upgrateRange == UpgrateMax){
+				plus3.setAlpha(0.6f);
+			}
+			else{
+				g.setColor(new Color(255,255,255));
+				g.drawString("$" + tower.get(checktowerClick).upgratePrice("Range"), 1810, 200);
+			}
+			
+			plus1.draw(1730,85);
+			plus2.draw(1730,135);
+			plus3.draw(1730,185);
 		}
 		else{
 			g.setColor(new Color(0, 0, 0));
-			g.drawString("Attack   " + tower.get(checktowerClick).attackTower, 1600, 100);
+			g.drawString("GoldRate " + tower.get(checktowerClick).goldRate, 1600, 100);
+			g.drawString("TimeRate " + tower.get(checktowerClick).goldTimeRate, 1600, 150);
+			
+			g.setColor(new Color(255,255 - (tower.get(checktowerClick).upgrateGoldRate)*14,30));
+			g.drawString("(" + tower.get(checktowerClick).upgrateGoldRate + ")", 1780, 100);
+			g.setColor(new Color(255,255 - (tower.get(checktowerClick).upgrateGoldTimeRate)*14,30));
+			g.drawString("(" + tower.get(checktowerClick).upgrateGoldTimeRate + ")", 1780, 150);
+			
+			if(tower.get(checktowerClick).upgrateGoldRate == UpgrateMax){
+				plus1.setAlpha(0.6f);
+			}
+			else{
+				g.setColor(new Color(255,255,255));
+				g.drawString("$" + tower.get(checktowerClick).upgratePrice("GoldRate"), 1810, 100);
+			}
+			if(tower.get(checktowerClick).upgrateGoldTimeRate == UpgrateMax){
+				plus2.setAlpha(0.6f);
+			}
+			else{
+				g.setColor(new Color(255,255,255));
+				g.drawString("$" + tower.get(checktowerClick).upgratePrice("GoldTimeRate"), 1810, 150);
+			}
+
+			plus1.draw(1730,85);
+			plus2.draw(1730,135);
 		}
-		
-		g.drawString("Speed   " + tower.get(checktowerClick).speedTower, 1600, 150);
-		g.drawString("Range   " + tower.get(checktowerClick).rangeTower, 1600, 200);
-		g.drawString("Element   " + tower.get(checktowerClick).element, 1600, 250);
-		
-		plus1.draw(1730,85);
-		plus2.draw(1730,135);
-		plus3.draw(1730,185);
+		drawSellTower();
+	}
+	
+	public void drawSellTower() throws SlickException{
+		ButtonSellTower = new Image("res/ButtonSell.png"); //1710,700,80,50
+		ButtonSellTower.draw(1700,650);
+	}
+	
+	private void mouseClickForSellTower(int button, int mouseX, int mouseY) {
+		if(button == 0 && !checkBuild && !checktowerClicktoCloseUpgrage){
+			if(checkClickTowerRectXForSell != -1 && checkClickTowerRectYForSell != -1){
+				
+				if(mouseX >= 1700 && mouseX <= 1800 &&
+						   mouseY >= 650 && mouseY <= 750	){
+						if(checkClicktowerforSell != -1){
+							tower.remove(checkClicktowerforSell);
+						}
+							for(int i=0;i<tower.size();i++){
+								tower.get(i).getNumTower(i);
+							}
+
+							for(int i=0;i<bullet.get(checkClicktowerforSell).size();i++){
+								bullet.get(checkClicktowerforSell).remove(i);
+							}
+							checkMouseClicktower = false;
+							checkClicktowerforSell = -1;
+								
+							
+							fieldBuild.fieldTerrain[checkClickTowerRectYForSell][checkClickTowerRectXForSell] = 0;
+							fieldBuild.fieldTerrain[checkClickTowerRectYForSell][checkClickTowerRectXForSell+1] = 0;
+							fieldBuild.fieldTerrain[checkClickTowerRectYForSell+1][checkClickTowerRectXForSell] = 0;
+							fieldBuild.fieldTerrain[checkClickTowerRectYForSell+1][checkClickTowerRectXForSell+1] = 0;	
+				}
+				
+			}
+			
+		}
 	}
 	
 	
@@ -542,7 +778,6 @@ public class TowerDefenseGame extends BasicGame{
 		//draw textWave
 		g.drawString("Wave   " + wave, 1300, 850);
 		g.drawString("Next Wave  " + currentWave, 1300, 870);
-		
 		//draw Hp and TextHp
 		HpLoaded(g);
 		
@@ -555,11 +790,9 @@ public class TowerDefenseGame extends BasicGame{
 		for(Monster monster : monsterAll){
 			monster.render(g);
 		}	
-		
-		
 		for(Tower tower : tower){
 			tower.render(g);
-		}	
+		}
 		for(Rune rune : runes){
 			rune.render(g);
 		}
@@ -605,10 +838,6 @@ public class TowerDefenseGame extends BasicGame{
 		g.drawString("" + Gold, 980, 815);
 	}
 	
-	public void GoldUpdate(){
-		
-	}
-	
 	
 	@Override
 	public void init(GameContainer container) throws SlickException {
@@ -623,7 +852,6 @@ public class TowerDefenseGame extends BasicGame{
 		 entities.add(cell);
 		 entities.add(filedbuild);
 		 entities.add(doorHeart);
-		 
 	}
 
 	
@@ -632,11 +860,8 @@ public class TowerDefenseGame extends BasicGame{
 		if(isGameStarted && !isGameOver){
 			releaseMonster();
 			Timer(delta);
-			if(wave == 1){
+			if(wave >= 1){
 				darkstage.setColor((int) 1f, 1f, 1f, changeResolutionBg);
-			}
-			else if(wave >= 2){
-				woodstage.setColor((int) 1f, 1f, 1f, changeResolutionBg);
 			}
 			
 			for (Entity entity : entities) {
@@ -655,7 +880,6 @@ public class TowerDefenseGame extends BasicGame{
 					monsterdies.remove(i);
 				}
 			}
-			
 			for(Tower tower : tower){
 				tower.update(container, delta);
 			}
@@ -707,9 +931,12 @@ public class TowerDefenseGame extends BasicGame{
 	
 	public static void main(String[] args) {
 		try {
+			int maxFPS = 60;
 		      TowerDefenseGame game = new TowerDefenseGame("TowerDefenseGame");
 		      AppGameContainer appgc = new AppGameContainer(game);
 		      appgc.setDisplayMode(Screen_Width, Screen_Height, false);
+
+		      appgc.setTargetFrameRate(maxFPS);
 		      appgc.start();
 		    } catch (SlickException e) {
 		      e.printStackTrace();
@@ -767,6 +994,7 @@ public class TowerDefenseGame extends BasicGame{
 			}
 			
 			mouseClickForUpgrateTower(button, x, y);
+			mouseClickForSellTower(button, x, y);
 			mouseClickBuyItemShop(button, x, y);
 		}
 	}

@@ -1,9 +1,11 @@
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.geom.Rectangle;
 
 
 public class Store implements Entity{
@@ -29,15 +31,17 @@ public class Store implements Entity{
 	private static Image towershop4;
 	private static Image goldbuilding;
 	
+	private Rectangle goldCooldown;
+	
 	
 	
 	public Store() throws SlickException {
 		
-		towershop1 = new Image("res/testTower.png");
-		towershop2 = new Image("res/testTower2.png");
-		towershop3 = new Image("res/testTower3.png");
-		towershop4 = new Image("res/testTower4.png");
-		goldbuilding = new Image("res/GoldBuilding.png");
+		towershop1 = new Image("res/Towers/testTower.png");
+		towershop2 = new Image("res/Towers/testTower2.png");
+		towershop3 = new Image("res/Towers/testTower3.png");
+		towershop4 = new Image("res/Towers/testTower4.png");
+		goldbuilding = new Image("res/Towers/GoldBuilding.png");
 		for(int i=0; i<cell.length;i++){
 			cell[i] = new Image("res/cell.png");
 			cellmouse[i] = new Image("res/cellmouse.png");
@@ -78,12 +82,20 @@ public class Store implements Entity{
 		return -1;
 	}
 
-	public void shopTower(){
+	public void shopTower(Graphics g){
 		towershop1.draw(shopXFirst,y);	//render tower1
 		towershop2.draw(shopXFirst+buttonSize + cellSpace,y);
 		towershop3.draw(shopXFirst+2*(buttonSize + cellSpace),y);
 		towershop4.draw(shopXFirst+3*(buttonSize + cellSpace),y);
 		goldbuilding.draw(shopXFirst+4*(buttonSize+cellSpace),y);
+		
+		goldCooldown = new Rectangle(shopXFirst+4*(buttonSize+cellSpace),y,78,78);
+		
+		if(TowerDefenseGame.checkGoldBuildingBuild){
+			g.setColor(new Color(255f,255f,255f,(float)0.2+(float)TowerDefenseGame.CooldownCountGoldBuilding/25000));
+			g.draw(goldCooldown);
+			g.fill(goldCooldown);
+		}
 	}
 
 	////////////////////////////////////////////////////////////////////
@@ -103,7 +115,7 @@ public class Store implements Entity{
 				cellmouse[i].draw(x[i],y);
 			}
 		}
-		shopTower();
+		shopTower(g);
 	
 	}
 	@Override

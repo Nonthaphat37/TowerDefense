@@ -10,7 +10,7 @@ import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Rectangle;
 
 
-public class MonsterLv1 extends Monster {
+public class MonsterLv2 extends Monster {
 	
 	//monster
 	private SpriteSheet Monster1;
@@ -19,21 +19,21 @@ public class MonsterLv1 extends Monster {
 	private Animation MonsterAnimation2;
 	private int attack = 1;				//set attck Hp
 	private float v = (float)2.5;				//set velocity
-	private int hpMonsterthis = 200;
+	private int hpMonsterthis = 350;
 	
 	private Rectangle hpBar;
 
-	public MonsterLv1(float x, float y) throws SlickException {
+	public MonsterLv2(float x, float y) throws SlickException {
 		super(x, y);
-		Monster1 = new SpriteSheet("res/Monsters/MonsterLv1/MonsterLv1_1.png",78,78);
-		Monster2 = new SpriteSheet("res/Monsters/MonsterLv1/MonsterLv1_2.png",78,78);
+		Monster1 = new SpriteSheet("res/Monsters/MonsterLv2/MonsterLv2_1.png",78,78);
+		Monster2 = new SpriteSheet("res/Monsters/MonsterLv2/MonsterLv2_2.png",78,78);
 		MonsterAnimation1 = new Animation(Monster1,100);
 		MonsterAnimation2 = new Animation(Monster2,100);
 		attackCastle = attack;		//set attack Hp
 		velocity = v;
 		hpMonster = hpMonsterthis;
 		CalWidthHpBar = hpMonster/50;
-		typeMonster = "MonsterLv1";
+		typeMonster = "MonsterLv2";
 	}
 	
 	@Override

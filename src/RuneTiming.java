@@ -11,7 +11,7 @@ public class RuneTiming extends Rune {
 
 	public RuneTiming(float x, float y) throws SlickException {
 		super(x, y);
-		runes = new Image("res/runeTiming.png");
+		runes = new Image("res/Runes/runeTiming.png");
 		typeRune = 1;
 	}
 	

@@ -29,9 +29,13 @@ public class Monster implements Entity{
 	protected int element = 0;
 	
 	private Rectangle hpBar;
+	private Rectangle hpBarBoss;
 	protected int CalWidthHpBar;
 	
 	protected String typeMonster;
+	
+
+	protected boolean checkrunes = true;
 
     public Monster(float x, float y){
 		this.x = x;
@@ -206,5 +210,13 @@ public class Monster implements Entity{
 		g.fill(hpBar);
 	}
 	
-	
+	protected void HpBarForBoss(Graphics g){
+		hpBarBoss = new Rectangle(1370,990,(float)(hpMonster/CalWidthHpBar*5),27);
+		g.drawString("" + hpMonster, 1375, 970);
+		g.drawString("BossHp", 1290, 995);
+		g.setColor(new Color(0,0,0));
+		g.draw(hpBarBoss);
+		g.setColor(new Color(200,0,0));
+		g.fill(hpBarBoss);
+	}
 }

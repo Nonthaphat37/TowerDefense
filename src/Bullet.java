@@ -35,8 +35,8 @@ public class Bullet implements Entity{
 	}
 	
 	private void checksearchXY(){
-			bx = SearchDirection.SearchX(mx+39,my+39,x,y,5);
-			by = SearchDirection.SearchY(mx+39,my+39,x,y,5);
+			bx = SearchDirection.SearchX(mx+39,my+39,x,y,15);
+			by = SearchDirection.SearchY(mx+39,my+39,x,y,15);
 	}
 	
 	

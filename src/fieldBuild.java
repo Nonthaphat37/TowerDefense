@@ -11,8 +11,8 @@ public class fieldBuild implements Entity{
 	public static int x_size = 40;
 	public static int y_size = 20;
 	
-	private static int[] x = new int[x_size];
-	private static int[] y = new int[y_size];
+	public static int[] x = new int[x_size];
+	public static int[] y = new int[y_size];
 	public static int sizeRect = 39;
 	
 	public static int fieldTerrain[][] = {
@@ -51,18 +51,18 @@ public class fieldBuild implements Entity{
 	private static Image towershop3;
 	private static Image towershop4;
 	private static Image goldbuilding;
-	private int[] Rangetower = new int[]{200,300,400,500,0};
+	private int[] Rangetower = new int[]{280,320,300,350,50};
 	Circle Rangetowershop;
 	
 	
 	
 	public fieldBuild() throws SlickException{
 		build = new Rectangle[x_size][y_size];
-		towershop1 = new Image("res/testTower.png");
-		towershop2 = new Image("res/testTower2.png");
-		towershop3 = new Image("res/testTower3.png");
-		towershop4 = new Image("res/testTower4.png");
-		goldbuilding = new Image("res/GoldBuilding.png");
+		towershop1 = new Image("res/Towers/testTower.png");
+		towershop2 = new Image("res/Towers/testTower2.png");
+		towershop3 = new Image("res/Towers/testTower3.png");
+		towershop4 = new Image("res/Towers/testTower4.png");
+		goldbuilding = new Image("res/Towers/GoldBuilding.png");
 		
 		for(int i=0;i<x_size;i++){
 			for(int j=0;j<y_size;j++){
@@ -71,6 +71,25 @@ public class fieldBuild implements Entity{
 		}
 	}
 	}
+	
+	public static int checkTowerTerrainX(float X){
+		for(int i=0;i<x_size;i++){
+			if(X == x[i]){
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	public static int checkTowerTerrainY(float Y){
+		for(int i=0;i<y_size;i++){
+			if(Y == y[i]){
+				return i;
+			}
+		}
+		return -1;
+	}
+	
 	public static int checkMouseMoveX(float mouseX){
 		for(int i=0;i<x_size;i++){
 				if(mouseX> x[i] && mouseX < x[i]+sizeRect){
@@ -109,10 +128,10 @@ public class fieldBuild implements Entity{
 			    	
 			         if( fieldTerrain[j][i] != 0){
 				    	   g.setColor(notbuildColor);
-				      }else{
+				     }else{
 						   g.setColor(myAlphaColor);
-					   } 
-			    	 }
+					 } 
+			    }
 			    g.fill(build[i][j]);
 			}
 		}
@@ -122,36 +141,41 @@ public class fieldBuild implements Entity{
 			if(TowerDefenseGame.checkMouseClickCell && 
 					checkCol_mouseXRectX != -1 && checkCol_mouseXRectY != -1
 					&& TowerDefenseGame.Gold >= TowerDefenseGame.priceTower[TowerDefenseGame.checkClicktower]){
-				if(checkCol_mouseXRectY-1 >= 0 && checkCol_mouseXRectX+1 != 40){
-					// delete circle show range if build in red field
-					if(fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX] == 0 &&
+				if(TowerDefenseGame.checkClicktower == 4 && TowerDefenseGame.checkGoldBuildingBuild){
+				}
+				else{
+					if(checkCol_mouseXRectY-1 >= 0 && checkCol_mouseXRectX+1 != 40){
+						// delete circle show range if build in red field
+						if(fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX] == 0 &&
 							fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX] == 0 &&
 							fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY-1][fieldBuild.checkCol_mouseXRectX+1] == 0 &&
 							fieldBuild.fieldTerrain[fieldBuild.checkCol_mouseXRectY][fieldBuild.checkCol_mouseXRectX+1] == 0){
-										Rangetowershop = new Circle((checkCol_mouseXRectX+1)*sizeRect,checkCol_mouseXRectY*sizeRect,Rangetower[TowerDefenseGame.checkClicktower]);
-										g.setColor(new Color(1f,1f,1f,0f));
-										g.draw(Rangetowershop);
-										g.setColor(new Color(1f,1f,1f,0.2f));
-										g.fill(Rangetowershop);
-				   }
-					if(TowerDefenseGame.checkClicktower == 0){
-						towershop1.draw(checkCol_mouseXRectX*sizeRect,
-						(checkCol_mouseXRectY-1)*sizeRect);
-					}else if(TowerDefenseGame.checkClicktower == 1){
-						towershop2.draw(checkCol_mouseXRectX*sizeRect,
-						(checkCol_mouseXRectY-1)*sizeRect);
-					}else if(TowerDefenseGame.checkClicktower == 2){
-						towershop3.draw(checkCol_mouseXRectX*sizeRect,
-						(checkCol_mouseXRectY-1)*sizeRect);
-					}else if(TowerDefenseGame.checkClicktower == 3){
-						towershop4.draw(checkCol_mouseXRectX*sizeRect,
-						(checkCol_mouseXRectY-1)*sizeRect);
-					}else if(TowerDefenseGame.checkClicktower == 4){
-						goldbuilding.draw(checkCol_mouseXRectX*sizeRect,
-						(checkCol_mouseXRectY-1)*sizeRect);
-					}
+										
+									Rangetowershop = new Circle((checkCol_mouseXRectX+1)*sizeRect,checkCol_mouseXRectY*sizeRect,Rangetower[TowerDefenseGame.checkClicktower]);
+									g.setColor(new Color(1f,1f,1f,0f));
+									g.draw(Rangetowershop);
+									g.setColor(new Color(1f,1f,1f,0.2f));
+									g.fill(Rangetowershop);
+						}
+						if(TowerDefenseGame.checkClicktower == 0){
+							towershop1.draw(checkCol_mouseXRectX*sizeRect,
+									(checkCol_mouseXRectY-1)*sizeRect);
+						}else if(TowerDefenseGame.checkClicktower == 1){
+							towershop2.draw(checkCol_mouseXRectX*sizeRect,
+									(checkCol_mouseXRectY-1)*sizeRect);
+						}else if(TowerDefenseGame.checkClicktower == 2){
+							towershop3.draw(checkCol_mouseXRectX*sizeRect,
+									(checkCol_mouseXRectY-1)*sizeRect);
+						}else if(TowerDefenseGame.checkClicktower == 3){
+							towershop4.draw(checkCol_mouseXRectX*sizeRect,
+									(checkCol_mouseXRectY-1)*sizeRect);
+						}else if(TowerDefenseGame.checkClicktower == 4 ){
+							goldbuilding.draw(checkCol_mouseXRectX*sizeRect,
+									(checkCol_mouseXRectY-1)*sizeRect);
+					}	
 				}
 			}
+		}
 	}
 	
 	@Override

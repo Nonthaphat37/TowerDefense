@@ -7,17 +7,17 @@ import org.newdawn.slick.SlickException;
 public class TowerFire extends Tower {
 	
 	//set Status tower
-		private int Range = 400;
-		private int Attack = 10;
-		private int Speed = 700;
-		private int Element = 2;
+	private int Attack = 15;
+	private int Speed = 35;
+	private int Range = 300;
+	private int Element = 2;
 		
 	
 	private Image towerFire;
 
 	public TowerFire(float x, float y) throws SlickException {
 		super(x, y);
-		towerFire = new Image("res/testTower3.png");
+		towerFire = new Image("res/Towers/testTower3.png");
 		rangeTower = this.Range;
 		attackTower = this.Attack;
 		speedTower = this.Speed;

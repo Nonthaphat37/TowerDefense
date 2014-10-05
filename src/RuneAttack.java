@@ -9,7 +9,7 @@ public class RuneAttack extends Rune {
 
 	public RuneAttack(float x, float y) throws SlickException {
 		super(x, y);
-		runes = new Image("res/runeAttack.png");
+		runes = new Image("res/Runes/runeAttack.png");
 		typeRune = 2;
 	}
 	
