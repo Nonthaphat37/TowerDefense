@@ -934,8 +934,7 @@ public class TowerDefenseGame extends BasicGame{
 			int maxFPS = 60;
 		      TowerDefenseGame game = new TowerDefenseGame("TowerDefenseGame");
 		      AppGameContainer appgc = new AppGameContainer(game);
-		      appgc.setDisplayMode(Screen_Width, Screen_Height, true);
-
+		      appgc.setDisplayMode(Screen_Width, Screen_Height, false);
 		      appgc.setTargetFrameRate(maxFPS);
 		      appgc.start();
 		    } catch (SlickException e) {
