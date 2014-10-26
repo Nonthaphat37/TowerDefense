@@ -8,24 +8,26 @@ public class SearchDirection {
 	private static float distance;
 	private static float vx;
 	private static float vy;
-	
-    public static void calculatorDistance(float x1, float y1, float x2, float y2){
-		  x = x1-x2;
-		  y = y1-y2;
-		  distance = (float) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+
+	public static void calculatorDistance(float x1, float y1, float x2, float y2) {
+		x = x1 - x2;
+		y = y1 - y2;
+		distance = (float) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 	}
-	  
-	public static float SearchX(float x1, float x2, float y1, float y2, float ovx){
+
+	public static float SearchX(float x1, float x2, float y1, float y2,
+			float ovx) {
 		calculatorDistance(x1, x2, y1, y2);
-		dircos = (float)Math.acos(x/distance);
-			vx = (float) (ovx * Math.cos(dircos));
+		dircos = (float) Math.acos(x / distance);
+		vx = (float) (ovx * Math.cos(dircos));
 		return vx;
 	}
-	
-	public static float SearchY(float x1, float x2, float y1, float y2, float ovy){
+
+	public static float SearchY(float x1, float x2, float y1, float y2,
+			float ovy) {
 		calculatorDistance(x1, x2, y1, y2);
-		dirsin = (float)Math.asin(y/distance);
-			vy = (float) (ovy * Math.sin(dirsin));
+		dirsin = (float) Math.asin(y / distance);
+		vy = (float) (ovy * Math.sin(dirsin));
 		return vy;
 	}
 }

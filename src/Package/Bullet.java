@@ -1,10 +1,10 @@
 package Package;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
-
-public class Bullet implements Entity{
+public class Bullet implements Entity {
 	private int BULLET_SIZE = 5;
 	protected float x;
 	protected float y;
@@ -13,52 +13,50 @@ public class Bullet implements Entity{
 	protected float bx;
 	protected float by;
 	public int numMon = -1;
-	
-	public int setNumMon(int numMon){
+
+	public int setNumMon(int numMon) {
 		this.numMon = numMon;
 		return numMon;
 	}
-	
-	public int getNumMon(){
+
+	public int getNumMon() {
 		return numMon;
 	}
-	
-	public void setMonster(Monster m){
-			this.mx = m.getX();
-			this.my = m.getY();
+
+	public void setMonster(Monster m) {
+		this.mx = m.getX();
+		this.my = m.getY();
 	}
-	
-	public Bullet(float x, float y){
+
+	public Bullet(float x, float y) {
 		this.x = x;
 		this.y = y;
-		//this.numTower = numTower;
-		
+		// this.numTower = numTower;
+
 	}
-	
-	private void checksearchXY(){
-			bx = SearchDirection.SearchX(mx+39,my+39,x,y,15);
-			by = SearchDirection.SearchY(mx+39,my+39,x,y,15);
+
+	private void checksearchXY() {
+		bx = SearchDirection.SearchX(mx + 39, my + 39, x, y, 15);
+		by = SearchDirection.SearchY(mx + 39, my + 39, x, y, 15);
 	}
-	
-	
+
 	@Override
 	public void render(Graphics g) {
 		g.setColor(new Color(255, 255, 200));
-		 g.fillOval(x, y, BULLET_SIZE, BULLET_SIZE);
+		g.fillOval(x, y, BULLET_SIZE, BULLET_SIZE);
 	}
-	
+
 	@Override
 	public void update(GameContainer container, int delta) {
-			checksearchXY();
-			x += bx;
-			y += by;
+		checksearchXY();
+		x += bx;
+		y += by;
 	}
-	
-	public boolean CollideMonster(){
-		if(Math.abs(mx+39-x) < 25 && Math.abs(my+39-y) < 25){
+
+	public boolean CollideMonster() {
+		if (Math.abs(mx + 39 - x) < 25 && Math.abs(my + 39 - y) < 25) {
 			return true;
-		}
-		else{
+		} else {
 			return false;
 		}
 	}

@@ -32,8 +32,8 @@ public class TowerDefenseGame extends BasicGame{
 	private float time = 0;
 	public float timer = 0;
 	
-	public int currentWave = 2;
-	public static int wave = 5;
+	public int currentWave = 30;
+	public static int wave = 3;
 	private int wavesmall = 1;
 	private boolean checkWave = true;  // check to release monster in next wave
 	
@@ -51,7 +51,7 @@ public class TowerDefenseGame extends BasicGame{
 	 private boolean monster_checkTotal = false;
 	 private boolean monster_checkTotalSummon = false;
 	 private static int number_monster = 0;
-	 private static int[] max_monsterwave =  new int[]{20,2,1,20,2,1,20,2,1,20,2,1,20,2,1};
+	 private static int[] max_monsterwave =  new int[]{20,2,1,20,2,1,20,2,1,20,2,1,20,2,1,1};
 	 private static float[] timerdelay_monster = new float[] {1,3,1};
 	 private static float timer_monster = 0;
 	 private static ArrayList<Monster> monsterAll = new ArrayList<Monster>();
@@ -258,11 +258,14 @@ public class TowerDefenseGame extends BasicGame{
 						}
 					}
 					else if(wave == 5){
-						if(wavesmall <= 3){
+						if(wavesmall <= 3 || wavesmall == 5){
 							calTimeMonster("wavesmall");
 						}
 						else if(wavesmall == 4 && monsterAll.size() == 0){
-							calTimeMonster("wave");
+							calTimeMonster("wavesmall");
+						}
+						else if(wavesmall == 6 && monsterAll.size() == 0){
+							calTimeMonster("wavesmall");
 						}
 					}
 					calTimeRune();
@@ -305,11 +308,21 @@ public class TowerDefenseGame extends BasicGame{
 			}
 			number_monster = 0;          //release monster next wave
 			monster_checkTotal = false;  //release monster next wave
-			if(wavesmall == 4){
-				currentWave = 15;
+			if(wave != 5){
+				if(wavesmall == 4){
+					currentWave = 15;
+				}
+				else{
+					currentWave = 30;
+				}
 			}
 			else{
-				currentWave = 30;
+				if(wavesmall == 4 || wavesmall == 6){
+					currentWave = 15;
+				}
+				else{
+					currentWave = 30;
+				}
 			}
 		    checkWave = false;
 		}
@@ -524,7 +537,18 @@ public class TowerDefenseGame extends BasicGame{
 			}
 			else if(wavesmall == 3 && number_monster < max_monsterwave[(wave-1)*3+(wavesmall-1)]){
 				if(!monster_checkTotal){
-					monsterAll.add(new MonsterLv4Boss(monster_startX, monster_startY));
+					monsterAll.add(new MonsterLv5Boss1(monster_startX, monster_startY));
+					monster_checkTotal = true;			// check monster release
+					timer_monster = 0;
+					number_monster++;
+				}
+				else if(timer_monster == timerdelay_monster[wavesmall-1]){
+					monster_checkTotal = false;			// check monster release
+				}
+			}
+			else if(wavesmall == 5 && number_monster < max_monsterwave[(wave-1)*3+(wavesmall-2)]){
+				if(!monster_checkTotal){
+					monsterAll.add(new MonsterLv5Boss2(monster_startX, monster_startY));
 					monster_checkTotal = true;			// check monster release
 					timer_monster = 0;
 					number_monster++;

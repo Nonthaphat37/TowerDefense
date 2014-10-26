@@ -6,7 +6,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
-public class MonsterLv1Boss extends Monster {
+public class MonsterLv5Boss1 extends Monster {
 
 	// monster
 	private SpriteSheet Monster1;
@@ -20,16 +20,16 @@ public class MonsterLv1Boss extends Monster {
 	private Animation MonsterSkillAnimation;
 	private int timeSkill = 0;
 	private boolean skillShow = false;
-	private int hpMonsterthis = 3500;
+	private int hpMonsterthis = 300000;
 
-	public MonsterLv1Boss(float x, float y) throws SlickException {
+	public MonsterLv5Boss1(float x, float y) throws SlickException {
 		super(x, y);
 		Monster1 = new SpriteSheet(
-				"res/Monsters/MonsterLv1Boss/MonsterLv1Boss_1.png", 78, 78);
+				"res/Monsters/MonsterLv5Boss1/MonsterLv5Boss1_1.png", 200, 220);
 		Monster2 = new SpriteSheet(
-				"res/Monsters/MonsterLv1Boss/MonsterLv1Boss_2.png", 78, 78);
+				"res/Monsters/MonsterLv5Boss1/MonsterLv5Boss1_2.png", 200, 220);
 		MonsterSkill = new SpriteSheet(
-				"res/Monsters/MonsterLv1Boss/MonsterLv1BossSkill.png", 70, 60);
+				"res/Monsters/MonsterLv5Boss1/MonsterLv5BossSkill.png", 70, 60);
 		MonsterAnimation1 = new Animation(Monster1, 100);
 		MonsterAnimation2 = new Animation(Monster2, 100);
 		MonsterSkillAnimation = new Animation(MonsterSkill, 100);
@@ -38,9 +38,9 @@ public class MonsterLv1Boss extends Monster {
 		velocity = v;
 		hpMonster = hpMonsterthis;
 		hpMonsterMax = hpMonster;
-		CalWidthHpBar = hpMonster / 50;
+		CalWidthHpBar = hpMonster / 80;
 		CalWidthHpBarBoss = hpMonster / 50;
-		typeMonster = "MonsterLv1Boss";
+		typeMonster = "MonsterLv5Boss1";
 		velocityGetSkill = v;
 		
 		element = 0;
@@ -49,24 +49,24 @@ public class MonsterLv1Boss extends Monster {
 	@Override
 	public void render(Graphics g) {
 		if (TowerDefenseGame.typeRunes != 1 && !checkrunes) {
-			MonsterAnimation1 = new Animation(Monster1, 100);
-			MonsterAnimation2 = new Animation(Monster2, 100);
+			MonsterAnimation1.start();
+			MonsterAnimation2.start();
 			checkrunes = true;
 		} else if (TowerDefenseGame.typeRunes == 1 && checkrunes) {
-			MonsterAnimation1 = new Animation(Monster1, 100000);
-			MonsterAnimation2 = new Animation(Monster2, 100000);
+			MonsterAnimation1.stop();
+			MonsterAnimation2.stop();
 			checkrunes = false;
 		}
 
 		if (checkAnimation == 0 || checkAnimation == 1) {
-			MonsterAnimation1.draw(x, y);
+			MonsterAnimation1.draw(x - 41, y - 133);
 		} else {
-			MonsterAnimation2.draw(x, y);
+			MonsterAnimation2.draw(x - 41, y - 133);
 		}
 		if (skillShow) {
-			MonsterSkillAnimation.draw(x + 4, y - 60);
+			MonsterSkillAnimation.draw(x + 10, y - 200);
 		}
-		HpBar(g, 0, 0);
+		HpBar(g, -12, 135);
 		HpBarForBoss(g);
 	}
 
@@ -77,11 +77,11 @@ public class MonsterLv1Boss extends Monster {
 	}
 
 	public void skill(int delta) {
-		if (hpMonster <= 1000) {
+		if (hpMonster <= 50000) {
 			skillShow = true;
 			timeSkill += delta;
-			if (timeSkill >= 1000) {
-				v = (float) 5.5;
+			if (timeSkill >= 1500) {
+				v = (float) 5;
 				velocity = v;
 			} else {
 				v = 0;
