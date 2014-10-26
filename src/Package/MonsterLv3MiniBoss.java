@@ -18,9 +18,9 @@ public class MonsterLv3MiniBoss extends Monster {
 	private SpriteSheet Monster2;
 	private Animation MonsterAnimation1;
 	private Animation MonsterAnimation2;
-	private int attack = 1;				//set attck Hp
-	private float v = (float)2.5;				//set velocity
-	private int hpMonsterthis = 100;
+	private int attack = 12;				//set attck Hp
+	private float v = (float)3.5;				//set velocity
+	private int hpMonsterthis = 11000;
 	
 
 	public MonsterLv3MiniBoss(float x, float y) throws SlickException {
@@ -69,6 +69,7 @@ public class MonsterLv3MiniBoss extends Monster {
 				MonsterAnimation2.draw(x-22,y-22);
 			}
 		}
+		
 		HpBar(g,2,9);
 	}
 	

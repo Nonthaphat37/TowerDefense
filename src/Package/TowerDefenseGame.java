@@ -33,7 +33,7 @@ public class TowerDefenseGame extends BasicGame{
 	public float timer = 0;
 	
 	public int currentWave = 2;
-	public static int wave = 0;
+	public static int wave = 5;
 	private int wavesmall = 1;
 	private boolean checkWave = true;  // check to release monster in next wave
 	
@@ -49,8 +49,9 @@ public class TowerDefenseGame extends BasicGame{
 	 public static float monster_startX = -78;
 	 public static float monster_startY = 156;
 	 private boolean monster_checkTotal = false;
+	 private boolean monster_checkTotalSummon = false;
 	 private static int number_monster = 0;
-	 private static int[] max_monsterwave =  new int[]{20,2,1,20,2,1,20,2,1};
+	 private static int[] max_monsterwave =  new int[]{20,2,1,20,2,1,20,2,1,20,2,1,20,2,1};
 	 private static float[] timerdelay_monster = new float[] {1,3,1};
 	 private static float timer_monster = 0;
 	 private static ArrayList<Monster> monsterAll = new ArrayList<Monster>();
@@ -76,6 +77,9 @@ public class TowerDefenseGame extends BasicGame{
 	private Image darkstage;
 	private Image woodstage;
 	private Image firestage;
+	private Image waterstage;
+	private Image finalstage;
+	
 	private Image Shopbackground;
 	private Image Upgratebackground;
 
@@ -121,7 +125,7 @@ public class TowerDefenseGame extends BasicGame{
 	public static boolean checkGoldBuildingBuild = false;
 	
 	//GoldSystem
-	public static int Gold = 30000;
+	public static int Gold = 3300;
 	public static int[] priceTower = {10,30,30,30,100};
 	
 	//Rune System
@@ -157,6 +161,8 @@ public class TowerDefenseGame extends BasicGame{
 		darkstage = new Image("res/Stages/DarkStage.png");
 		woodstage = new Image("res/Stages/WoodStage.png");
 		firestage = new Image("res/Stages/FireStage.png");
+		waterstage = new Image("res/Stages/WaterStage.png");
+		finalstage = new Image("res/Stages/FinalStage.png");
 		terrains = new TerrainStage(Stage_x, Stage_y, wave);
 		Shopbackground = new Image("res/Shop.png");
 		Upgratebackground = new Image("res/Upgrate.png");
@@ -175,6 +181,12 @@ public class TowerDefenseGame extends BasicGame{
 		}
 		else if(wave == 3){
 			firestage.draw(Stage_x, Stage_y);
+		}
+		else if(wave == 4){
+			waterstage.draw(Stage_x, Stage_y);
+		}
+		else if(wave == 5){
+			finalstage.draw(Stage_x, Stage_y);
 		}
 		Shopbackground.draw(30, Stage_Height+10);
 		Upgratebackground.draw(Stage_Width+3, 0);
@@ -230,6 +242,22 @@ public class TowerDefenseGame extends BasicGame{
 						}
 					}
 					else if(wave == 3){
+						if(wavesmall <= 3){
+							calTimeMonster("wavesmall");
+						}
+						else if(wavesmall == 4 && monsterAll.size() == 0){
+							calTimeMonster("wave");
+						}
+					}
+					else if(wave == 4){
+						if(wavesmall <= 3){
+							calTimeMonster("wavesmall");
+						}
+						else if(wavesmall == 4 && monsterAll.size() == 0){
+							calTimeMonster("wave");
+						}
+					}
+					else if(wave == 5){
 						if(wavesmall <= 3){
 							calTimeMonster("wavesmall");
 						}
@@ -433,6 +461,94 @@ public class TowerDefenseGame extends BasicGame{
 				}
 				else if(timer_monster == timerdelay_monster[wavesmall-1]){
 					monster_checkTotal = false;			// check monster release
+				}
+			}
+		}
+		else if(wave == 4){
+			if(wavesmall == 1 && number_monster < max_monsterwave[(wave-1)*3+(wavesmall-1)]){
+				if(!monster_checkTotal){
+					monsterAll.add(new MonsterLv4(monster_startX, monster_startY));
+					monster_checkTotal = true;			// check monster release
+					timer_monster = 0;
+					number_monster++;
+				}
+				else if(timer_monster == timerdelay_monster[wavesmall-1]){
+					monster_checkTotal = false;			// check monster release
+				}
+			}
+			else if(wavesmall == 2 && number_monster < max_monsterwave[(wave-1)*3+(wavesmall-1)]){
+				if(!monster_checkTotal){
+					monsterAll.add(new MonsterLv4MiniBoss(monster_startX, monster_startY));
+					monster_checkTotal = true;			// check monster release
+					timer_monster = 0;
+					number_monster++;
+				}
+				else if(timer_monster == timerdelay_monster[wavesmall-1]){
+					monster_checkTotal = false;			// check monster release
+				}
+			}
+			else if(wavesmall == 3 && number_monster < max_monsterwave[(wave-1)*3+(wavesmall-1)]){
+				if(!monster_checkTotal){
+					monsterAll.add(new MonsterLv4Boss(monster_startX, monster_startY));
+					monster_checkTotal = true;			// check monster release
+					timer_monster = 0;
+					number_monster++;
+				}
+				else if(timer_monster == timerdelay_monster[wavesmall-1]){
+					monster_checkTotal = false;			// check monster release
+				}
+			}
+		}
+		else if(wave == 5){
+			if(wavesmall == 1 && number_monster < max_monsterwave[(wave-1)*3+(wavesmall-1)]){
+				if(!monster_checkTotal){
+					monsterAll.add(new MonsterLv5(monster_startX, monster_startY));
+					monster_checkTotal = true;			// check monster release
+					timer_monster = 0;
+					number_monster++;
+				}
+				else if(timer_monster == timerdelay_monster[wavesmall-1]){
+					monster_checkTotal = false;			// check monster release
+				}
+			}
+			else if(wavesmall == 2 && number_monster < max_monsterwave[(wave-1)*3+(wavesmall-1)]){
+				if(!monster_checkTotal){
+					monsterAll.add(new MonsterLv5MiniBoss(monster_startX, monster_startY));
+					monster_checkTotal = true;			// check monster release
+					timer_monster = 0;
+					number_monster++;
+				}
+				else if(timer_monster == timerdelay_monster[wavesmall-1]){
+					monster_checkTotal = false;			// check monster release
+				}
+			}
+			else if(wavesmall == 3 && number_monster < max_monsterwave[(wave-1)*3+(wavesmall-1)]){
+				if(!monster_checkTotal){
+					monsterAll.add(new MonsterLv4Boss(monster_startX, monster_startY));
+					monster_checkTotal = true;			// check monster release
+					timer_monster = 0;
+					number_monster++;
+				}
+				else if(timer_monster == timerdelay_monster[wavesmall-1]){
+					monster_checkTotal = false;			// check monster release
+				}
+			}
+		}
+	}
+	
+	public void skillSummonMonster() throws SlickException{
+		for(int i=0;i<monsterAll.size();i++){
+			if(monsterAll.get(i).typeMonster == "MonsterLv4Boss"){
+				if(monsterAll.get(i).skillSummonOn && !monster_checkTotalSummon){
+					monster_checkTotalSummon = true;
+					timer_monster = 0;
+					monsterAll.add(new MonsterLv4Summon(monster_startX, monster_startY));
+				}
+				else if(timer_monster == timerdelay_monster[0] && monsterAll.get(i).skillSummonOn && monster_checkTotalSummon){
+					monster_checkTotalSummon = false;
+					timer_monster = 0;
+					monsterAll.add(new MonsterLv4Summon(monster_startX, monster_startY));
+					monsterAll.get(i).skillSummonOn = false;
 				}
 			}
 		}
@@ -693,8 +809,14 @@ public class TowerDefenseGame extends BasicGame{
 						 if(monsterAll.get(monsterRememberBullet).getDeath()){
 							 monsterdies.add(new MonsterDie(monsterAll.get(monsterRememberBullet).x, monsterAll.get(monsterRememberBullet).y, 
 									 						monsterAll.get(monsterRememberBullet).typeMonster, monsterAll.get(monsterRememberBullet).checkAnimation));
+							 for(int m=0;m<tower.size();m++){
+								 if(tower.get(m).getNumMon() == monsterRememberBullet){
+									 bullet.get(m).removeAll(bullet);
+								 }
+							 }
 							 monsterAll.remove(monsterRememberBullet);
 							 
+						
 							 tower.get(i).rememberNumMon = -1;
 							 tower.get(i).checkremember_Mon = false;
 							 for(int k=0; k < tower.size();k++){
@@ -866,19 +988,28 @@ public class TowerDefenseGame extends BasicGame{
 		g.drawString("Next Wave  " + currentWave, 1300, 870);
 		//draw Hp and TextHp
 		HpLoaded(g);
-		
+
+		for(Tower tower : tower){
+			tower.render(g);
+		}
 		for(Entity entity : entities) {
 			entity.render(g);
 		}
 		for(MonsterDie monsterdie : monsterdies){
 			monsterdie.render(g);
 		}	
+		//render summon monster cuz boss monster must back summonmonster
 		for(Monster monster : monsterAll){
-			monster.render(g);
-		}	
-		for(Tower tower : tower){
-			tower.render(g);
+			if(monster.typeMonster == "MonsterLv4Summon"){
+				monster.render(g);
+			}
 		}
+		for(Monster monster : monsterAll){
+			if(monster.typeMonster != "MonsterLv4Summon"){
+				monster.render(g);
+			}
+		}
+		
 		for(Rune rune : runes){
 			rune.render(g);
 		}
@@ -950,6 +1081,7 @@ public class TowerDefenseGame extends BasicGame{
 	public void update(GameContainer container, int delta) throws SlickException {
 		if(isGameStarted && !isGameOver){
 			releaseMonster();
+			skillSummonMonster();
 			Timer(delta);
 			if(wave >= 1){
 				darkstage.setColor((int) 1f, 1f, 1f, changeResolutionBg);
@@ -960,8 +1092,9 @@ public class TowerDefenseGame extends BasicGame{
 			}
 			
 			for(Monster monster : monsterAll){
-			   	   monster.update(container, delta);
+				  monster.update(container, delta);
 			}
+			
 			for(MonsterDie monsterdie : monsterdies){
 				monsterdie.update(container, delta);
 

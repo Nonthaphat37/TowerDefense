@@ -18,7 +18,7 @@ public class MonsterLv3Boss extends Monster {
 	private Animation MonsterAnimation;
 	private int attack = 15;				//set attck Hp
 	private float v = (float)2.2;				//set velocity
-	private float velocitySkillMonster = (float) 3.5;
+	private float velocitySkillMonster = (float) 3.2;
 	
 	private SpriteSheet MonsterSkill1;
 	private SpriteSheet MonsterSkill2;
@@ -114,7 +114,6 @@ public class MonsterLv3Boss extends Monster {
 	public void update(GameContainer container, int delta) {
 			updateposition();
 			skill(delta);
-			System.out.println(timingSkillConstant);
 	}
 	
 	

@@ -95,7 +95,7 @@ public class MonsterDie implements Entity{
 			setMon = 0;
 		}
 		else if(typeMonster == "MonsterLv3MiniBoss"){
-			dropGold = 10+random.nextInt(8);
+			dropGold = 65+random.nextInt(25);
 			if(checkAnimation == 0 || checkAnimation == 1){
 				SpriteSheetDie = new SpriteSheet("res/Monsters/MonsterLv3MiniBoss/MonsterLv3MiniBoss_Die01.png",110,110);
 				AnimationDie = new Animation(SpriteSheetDie,100);
@@ -108,11 +108,46 @@ public class MonsterDie implements Entity{
 			setMon = 2;
 		}
 		else if(typeMonster == "MonsterLv3Boss"){
-			dropGold = 200+random.nextInt(60);
+			dropGold = 160+random.nextInt(60);
 			SpriteSheetDie = new SpriteSheet("res/Monsters/MonsterLv3Boss/MonsterLv3Boss_Die.png",120,150);
 			AnimationDie = new Animation(SpriteSheetDie,150);
 			checkAddDieMonster = true;
 			setMon = 3;
+		}
+		else if(typeMonster == "MonsterLv4"){
+			dropGold = 13+random.nextInt(7);
+			SpriteSheetDie = new SpriteSheet("res/Monsters/MonsterLv4/MonsterLv4_Die.png",78,78);
+			AnimationDie = new Animation(SpriteSheetDie,100);
+			checkAddDieMonster = true;
+			setMon = 0;
+		}
+		else if(typeMonster == "MonsterLv4MiniBoss"){
+			dropGold = 135+random.nextInt(35);
+			SpriteSheetDie = new SpriteSheet("res/Monsters/MonsterLv4MiniBoss/MonsterLv4MiniBoss_Die.png",130,120);
+			AnimationDie = new Animation(SpriteSheetDie,100);
+			checkAddDieMonster = true;
+			setMon = 4;
+		}
+		else if(typeMonster == "MonsterLv4Boss"){
+			dropGold = 285+random.nextInt(85);
+			SpriteSheetDie = new SpriteSheet("res/Monsters/MonsterLv4Boss/MonsterLv4Boss_Die.png",160,180);
+			AnimationDie = new Animation(SpriteSheetDie,150);
+			checkAddDieMonster = true;
+			setMon = 5;
+		}
+		else if(typeMonster == "MonsterLv4Summon"){
+			dropGold = 1;
+			SpriteSheetDie = new SpriteSheet("res/Monsters/MonsterLv4Summon/MonsterLv4Summon_Die.png",78,78);
+			AnimationDie = new Animation(SpriteSheetDie,150);
+			checkAddDieMonster = true;
+			setMon = 0;
+		}
+		else if(typeMonster == "MonsterLv5"){
+			dropGold = 13+random.nextInt(7);
+			SpriteSheetDie = new SpriteSheet("res/Monsters/MonsterLv5/MonsterLv5_Die.png",100,100);
+			AnimationDie = new Animation(SpriteSheetDie,100);
+			checkAddDieMonster = true;
+			setMon = 1;
 		}
 		this.x = x;
 		this.y = y;
@@ -133,6 +168,12 @@ public class MonsterDie implements Entity{
 			}
 			else if(setMon == 3){
 				AnimationDie.draw(x-20,y-72, new Color(255f,255f,255f,(float)(TimeToDelete/4000)));
+			}
+			else if(setMon == 4){
+				AnimationDie.draw(x-26,y-24, new Color(255f,255f,255f,(float)(TimeToDelete/4000)));
+			}
+			else if(setMon == 5){
+				AnimationDie.draw(x-36,y-91, new Color(255f,255f,255f,(float)(TimeToDelete/4000)));
 			}
 			AnimationDie.setLooping(false);
 			TextGold(g);

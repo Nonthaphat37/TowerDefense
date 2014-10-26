@@ -48,9 +48,9 @@ public class Monster implements Entity{
 	protected boolean getSkillFrost = false;
 	
 	//skill Monster
-	protected boolean skillDefenseOn = false;
-
-	
+	protected boolean skillDefenseOn = false;  //skill boss fire
+	protected boolean skillSummonOn = false;   //skill boss water
+	protected boolean skillDefense50On = false;   //skill boss water
 
     public Monster(float x, float y){
 		this.x = x;
@@ -67,6 +67,10 @@ public class Monster implements Entity{
     
     
     public void MonsterAttacked(int attack, int element,boolean skillOn){
+    	if(skillDefense50On){
+    		attack /= 2;
+			System.out.println(attack);
+    	}
     	if(!skillDefenseOn){
     		if(this.element == 0 && 
         			(element == 0 || element == 1 || element == 2 || element == 3)){
