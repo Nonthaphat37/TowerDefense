@@ -1,5 +1,6 @@
 package Package;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.newdawn.slick.Color;
@@ -13,7 +14,7 @@ import Package.TowerWater.State;
 public class TowerFire extends Tower {
 
 	// set Status tower
-	private int Attack = 15;
+	private int Attack = 25;
 	private int Speed = 35;
 	private int Range = 300;
 	private int Element = 2;
@@ -22,6 +23,10 @@ public class TowerFire extends Tower {
 
 	private Image towerFire;
 	private Image cellSkill;
+	
+	private boolean textUp = false;
+	private float timeForTextUpConstant = 30;
+	private float timeForTextUp = 0;
 
 	public TowerFire(float x, float y) throws SlickException {
 		super(x, y);
@@ -31,14 +36,14 @@ public class TowerFire extends Tower {
 		speedTower = this.Speed;
 		element = this.Element;
 		randomChanceSkill = new Random();
-		cellSkill = new Image("res/Towers/SkillTower/skillTowerWater2.png");
+		cellSkill = new Image("res/Towers/SkillTower/skillTowerFire.png");
 	}
 
 	public void chanceskillFire() {
 		if (skillFireOn) {
 			if (randomChanceSkill.nextInt(3) == 0) {
-				calSpeed = speedSecTower - 250;
-				System.out.println("skill Tower fire");
+				calSpeed = speedSecTower - 350;
+				textUp = true;
 			}
 			skillFireOn = false;
 		}
@@ -59,11 +64,25 @@ public class TowerFire extends Tower {
 		RenderRuneAttack();
 		chanceskillFire();
 		showSkill(g);
+		textSkillUp(g);
 	}
 
 	@Override
 	public void update(GameContainer container, int delta) {
 		towerFire.setRotation(dir);
+		if(textUp){
+			timeForTextUp+=1.2;
+			if(timeForTextUp >= timeForTextUpConstant){
+				textUp = false;
+				timeForTextUp = 0;
+			}
+		}
 	}
 
+	public void textSkillUp(Graphics g){
+		if(textUp){
+			g.setColor(new Color(255f, 0f, 0f,(1-(timeForTextUp/timeForTextUpConstant))));
+			g.drawString("Double", x+13, y - timeForTextUp);
+		}
+	}
 }

@@ -10,8 +10,8 @@ import org.newdawn.slick.SlickException;
 public class TowerWater extends Tower {
 
 	// set Status tower
-	private int Attack = 45;
-	private int Speed = 15;
+	private int Attack = 55;
+	private int Speed = 17;
 	private int Range = 320;
 	private int Element = 1;
 
@@ -31,7 +31,7 @@ public class TowerWater extends Tower {
 		attackTower = this.Attack;
 		speedTower = this.Speed;
 		element = this.Element;
-		cellSkill = new Image("res/Towers/SkillTower/skillTowerWater2.png");
+		cellSkill = new Image("res/Towers/SkillTower/skillTowerWater.png");
 	}
 
 	public void showSkill(Graphics g) {

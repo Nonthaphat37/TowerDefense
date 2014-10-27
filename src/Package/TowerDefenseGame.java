@@ -13,6 +13,7 @@ import org.newdawn.slick.SlickException;
 
 
 import org.newdawn.slick.Input; //import key if finish delete
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Rectangle;
 
@@ -32,8 +33,8 @@ public class TowerDefenseGame extends BasicGame{
 	private float time = 0;
 	public float timer = 0;
 	
-	public int currentWave = 30;
-	public static int wave = 3;
+	public int currentWave = 2;
+	public static int wave = 0;
 	private int wavesmall = 1;
 	private boolean checkWave = true;  // check to release monster in next wave
 	
@@ -125,7 +126,7 @@ public class TowerDefenseGame extends BasicGame{
 	public static boolean checkGoldBuildingBuild = false;
 	
 	//GoldSystem
-	public static int Gold = 3300;
+	public static int Gold = 170;
 	public static int[] priceTower = {10,30,30,30,100};
 	
 	//Rune System
@@ -153,6 +154,22 @@ public class TowerDefenseGame extends BasicGame{
 	}
 	
 	
+	//Sound
+	private static Sound soundReleaseBulletEarth;
+	private static Sound soundReleaseBulletFire;
+	private static Sound soundReleaseBulletWater;
+	private static Sound soundReleaseBulletWaterSkill;
+	private static Sound soundReleaseBulletDark;
+	
+	
+	public void setSound() throws SlickException{
+		soundReleaseBulletEarth = new Sound("res/Towers/soundTowerEarth.wav");
+		soundReleaseBulletFire = new Sound("res/Towers/soundTowerFire.wav");
+		soundReleaseBulletWater = new Sound("res/Towers/soundTowerWater.wav");
+		soundReleaseBulletWaterSkill = new Sound("res/Towers/soundTowerWaterSkill.wav");
+		soundReleaseBulletDark = new Sound("res/Towers/soundTowerDark.wav");
+		
+	}
 	
 	//SetBackGround
 	public void setBackgroundinit(GameContainer container) throws SlickException{
@@ -169,6 +186,8 @@ public class TowerDefenseGame extends BasicGame{
 		plus1 = new Image("res/Plus.png");
 		plus2 = new Image("res/Plus.png");
 		plus3 = new Image("res/Plus.png");
+		
+		setSound();
 	}
 	
 	public void setBackgroundRender(Graphics g) throws SlickException{
@@ -589,16 +608,30 @@ public class TowerDefenseGame extends BasicGame{
 	public static void releaseBullet(int numTower){
 		if(tower.get(numTower).getElement() == 0){
 			bullet.get(numTower).add(new BulletDark(tower.get(numTower).x+39,tower.get(numTower).y+39));
+			
+			soundReleaseBulletDark.play(1f,0.4f);
 		}
 		else if(tower.get(numTower).getElement() == 1){
 			bullet.get(numTower).add(new BulletWater(tower.get(numTower).x+39,tower.get(numTower).y+39));
+
+			soundReleaseBulletWater.play(1f,0.4f);
+			
+			if(tower.get(numTower).skillWaterOn){
+				soundReleaseBulletWaterSkill.play(1f,0.4f);
+			}else{
+				soundReleaseBulletWater.play(1f,0.4f);
+			}
 		}
 		else if(tower.get(numTower).getElement() == 2){
 			bullet.get(numTower).add(new BulletFire(tower.get(numTower).x+39,tower.get(numTower).y+39));
 			tower.get(numTower).getskillFire();
+			
+			soundReleaseBulletFire.play(1f,0.4f);
 		}
 		else if(tower.get(numTower).getElement() == 3){
 			bullet.get(numTower).add(new BulletEarth(tower.get(numTower).x+39,tower.get(numTower).y+39));
+
+			soundReleaseBulletEarth.play(1f,0.4f);
 		}
 		if(bullet.get(numTower).get(bullet.get(numTower).size()-1).getNumMon() == -1){
 			 monsterRememberBullet = bullet.get(numTower).get(bullet.get(numTower).size()-1).setNumMon(tower.get(numTower).getNumMon());
