@@ -10,7 +10,7 @@ import org.newdawn.slick.SlickException;
 public class TowerWater extends Tower {
 
 	// set Status tower
-	private int Attack = 55;
+	private int Attack = 105;
 	private int Speed = 17;
 	private int Range = 320;
 	private int Element = 1;

@@ -35,7 +35,8 @@ public class TowerDefenseGame extends BasicGame{
 	
 	public int currentWave = 2;
 	public static int wave = 0;
-	private int wavesmall = 1;
+	private int wavesmall = 0;
+	
 	private boolean checkWave = true;  // check to release monster in next wave
 	
 	 private LinkedList<Entity> entities;
@@ -126,7 +127,7 @@ public class TowerDefenseGame extends BasicGame{
 	public static boolean checkGoldBuildingBuild = false;
 	
 	//GoldSystem
-	public static int Gold = 170;
+	public static int Gold = 3000;
 	public static int[] priceTower = {10,30,30,30,100};
 	
 	//Rune System

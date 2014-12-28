@@ -14,7 +14,7 @@ import Package.TowerWater.State;
 public class TowerFire extends Tower {
 
 	// set Status tower
-	private int Attack = 25;
+	private int Attack = 75;
 	private int Speed = 35;
 	private int Range = 300;
 	private int Element = 2;

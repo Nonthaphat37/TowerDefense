@@ -107,7 +107,7 @@ public class fieldBuild implements Entity {
 	}
 
 	private void checkPositionMouseAndRect(Graphics g) {
-		Color outRect = new Color(0f, 0f, 0f, 0f);
+		Color outRect = new Color(255f, 255f, 255f, 0f);
 		Color myAlphaColor = new Color(0f, 150f, 0f, 0.5f);
 		Color notbuildColor = new Color(150f, 0f, 0f, 0.3f);
 		for (int i = 0; i < x_size; i++) {

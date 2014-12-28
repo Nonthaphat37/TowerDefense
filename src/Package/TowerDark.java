@@ -10,7 +10,7 @@ import org.newdawn.slick.SlickException;
 public class TowerDark extends Tower {
 
 	// set Status tower
-	private int Attack = 30;
+	private int Attack = 80;
 	private int Speed = 20;
 	private int Range = 280;
 	private int Element = 0;

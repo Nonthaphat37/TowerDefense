@@ -12,7 +12,7 @@ import Package.TowerWater.State;
 public class TowerEarth extends Tower {
 
 	// set Status tower
-	private int Attack = 110; // 90
+	private int Attack = 190; // 90
 	private int Speed = 10; // 5-10
 	private int Range = 350;
 	private int Element = 3;
